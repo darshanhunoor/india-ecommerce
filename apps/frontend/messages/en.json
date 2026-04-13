@@ -1,0 +1,24 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "Account"
+  },
+  "Home": {
+    "heroTitle": "Premium Indian Brands",
+    "heroSubtitle": "Discover the finest regional and global products shipped across India.",
+    "shopNow": "Shop Now",
+    "trending": "Trending Now",
+    "flashSale": "Flash Sale"
+  },
+  "ProductList": {
+    "filters": "Filters",
+    "sort": "Sort By",
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  }
+}
