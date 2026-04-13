@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { GstService } from './gst.service';
 
 @Module({
-  providers: [GstService]
+  providers: [GstService],
 })
 export class GstModule {}

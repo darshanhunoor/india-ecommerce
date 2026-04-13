@@ -44,7 +44,7 @@ export default async function ProductsPage({params: {locale}}: {params: {locale:
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p: any, i: number) => (
+          {products.map((p: Record<string, any>, i: number) => (
             <Link href={`/${locale}/products/${p.slug}`} key={p.id} className="glass-card overflow-hidden group flex flex-col animate-slide-up" style={{animationDelay: `${(i % 10) * 50}ms`}}>
               <div className="h-64 bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex-shrink-0">
                 <Image 
@@ -81,13 +81,6 @@ export default async function ProductsPage({params: {locale}}: {params: {locale:
                       ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
                       : 'bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900'
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault(); // Prevent navigating to product detail
-                    if (p.stock > 0) {
-                      // Client side handler for Zustand cart
-                      alert(`Added ${p.name[locale] || p.name['en']} to cart!`);
-                    }
-                  }}
                 >
                   <ShoppingCart size={18} />
                   {p.stock === 0 ? 'Out of Stock' : 'Add to Cart'}

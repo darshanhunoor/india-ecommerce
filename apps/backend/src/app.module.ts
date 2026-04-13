@@ -14,7 +14,19 @@ import { AdminModule } from './admin/admin.module';
 import { GstModule } from './gst/gst.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule, ProductsModule, CartModule, OrdersModule, PaymentsModule, DeliveryModule, ReviewsModule, NotificationsModule, AdminModule, GstModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    ProductsModule,
+    CartModule,
+    OrdersModule,
+    PaymentsModule,
+    DeliveryModule,
+    ReviewsModule,
+    NotificationsModule,
+    AdminModule,
+    GstModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
