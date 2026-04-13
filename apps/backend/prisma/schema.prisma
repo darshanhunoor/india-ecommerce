@@ -1,0 +1,240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CUSTOMER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentMethod {
+  UPI
+  CARD
+  NETBANKING
+  WALLET
+  RAZORPAY
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum CouponType {
+  FLAT
+  PERCENT
+}
+
+model User {
+  id            String    @id @default(uuid())
+  mobile        String    @unique
+  email         String?   @unique
+  name          String?
+  role          Role      @default(CUSTOMER)
+  gstin         String?
+  created_at    DateTime  @default(now())
+  
+  addresses     Address[]
+  orders        Order[]
+  cart_items    CartItem[]
+  reviews       Review[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  user_id     String
+  label       String?
+  flat        String?
+  street      String?
+  city        String?
+  state       String?
+  pin_code    String
+  is_default  Boolean  @default(false)
+  
+  user        User     @relation(fields: [user_id], references: [id])
+  orders      Order[]
+
+  @@map("addresses")
+}
+
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  parent_id   String?
+  image_url   String?
+  hsn_code    String?
+  
+  parent      Category?  @relation("CategoryToCategory", fields: [parent_id], references: [id])
+  children    Category[] @relation("CategoryToCategory")
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id          String             @id @default(uuid())
+  name        Json               // JSONB for multi-lang name {"en": "...", "hi": "..."}
+  slug        String             @unique
+  category_id String
+  brand       String?
+  description Json               // JSONB for multi-lang description
+  hsn_code    String?
+  gst_rate    Decimal            // e.g. 5.0, 12.0, 18.0
+  mrp_paise   Int
+  price_paise Int
+  stock       Int
+  images      String[]
+  is_active   Boolean            @default(true)
+  
+  category    Category           @relation(fields: [category_id], references: [id])
+  variants    ProductVariant[]
+  reviews     Review[]
+
+  @@map("products")
+}
+
+model ProductVariant {
+  id          String   @id @default(uuid())
+  product_id  String
+  sku         String   @unique
+  attributes  Json     // JSONB e.g. {"size": "XL", "color": "Red"}
+  price_paise Int
+  stock       Int
+  images      String[]
+  
+  product     Product  @relation(fields: [product_id], references: [id])
+  cart_items  CartItem[]
+  order_items OrderItem[]
+
+  @@map("product_variants")
+}
+
+model CartItem {
+  id          String         @id @default(uuid())
+  user_id     String?
+  guest_uuid  String?        // UUID in localStorage for guest cart
+  variant_id  String
+  quantity    Int
+  
+  user        User?          @relation(fields: [user_id], references: [id])
+  variant     ProductVariant @relation(fields: [variant_id], references: [id])
+
+  @@map("cart_items")
+}
+
+model Coupon {
+  id              String     @id @default(uuid())
+  code            String     @unique
+  type            CouponType
+  value           Int        // discount amount or percent depending on type
+  min_order_paise Int        // paise
+  max_uses        Int        @default(1)
+  expiry          DateTime?
+
+  @@map("coupons")
+}
+
+model Order {
+  id                String         @id @default(uuid())
+  user_id           String
+  address_id        String
+  status            OrderStatus    @default(PENDING)
+  payment_method    PaymentMethod
+  razorpay_order_id String?        @unique
+  total_paise       Int
+  gst_paise         Int
+  delivery_paise    Int
+  invoice_url       String?
+  awb_number        String?
+  
+  user              User           @relation(fields: [user_id], references: [id])
+  address           Address        @relation(fields: [address_id], references: [id])
+  order_items       OrderItem[]
+  payments          Payment[]
+  reviews           Review[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id          String         @id @default(uuid())
+  order_id    String
+  variant_id  String
+  qty         Int
+  price_paise Int
+  gst_rate    Decimal
+  hsn_code    String?
+  
+  order       Order          @relation(fields: [order_id], references: [id])
+  variant     ProductVariant @relation(fields: [variant_id], references: [id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  id                 String        @id @default(uuid())
+  order_id           String
+  gateway            String        // "RAZORPAY", "COD"
+  gateway_payment_id String?       @unique
+  status             PaymentStatus @default(PENDING)
+  amount_paise       Int
+  method             String?       // "UPI", "CARD", etc. from gateway
+  captured_at        DateTime?
+  
+  order              Order         @relation(fields: [order_id], references: [id])
+
+  @@map("payments")
+}
+
+model Review {
+  id          String   @id @default(uuid())
+  user_id     String
+  product_id  String
+  order_id    String
+  rating      Int      // 1 to 5
+  body        String?
+  images      String[]
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  user        User     @relation(fields: [user_id], references: [id])
+  product     Product  @relation(fields: [product_id], references: [id])
+  order       Order    @relation(fields: [order_id], references: [id])
+
+  @@map("reviews")
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  user_id     String
+  type        String   // "SMS", "EMAIL", "WHATSAPP", "IN_APP"
+  title       String
+  body        String
+  is_read     Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@map("notifications")
+}
