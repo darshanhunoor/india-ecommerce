@@ -1,9 +1,36 @@
 import createMiddleware from 'next-intl/middleware';
-import {routing} from './i18n/routing';
+import { routing } from './i18n/routing';
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  
+  // Public paths bypass auth checks
+  const publicPaths = ['/products', '/login'];
+  
+  // Check auth for protected routes
+  const protectedPaths = ['/checkout', '/orders'];
+  const isProtectedPath = protectedPaths.some(p => pathname.includes(p));
+  
+  if (isProtectedPath) {
+    const accessToken = request.cookies.get('access_token')?.value;
+    if (!accessToken) {
+      // Redirect to login page
+      const locale = request.cookies.get('NEXT_LOCALE')?.value || routing.defaultLocale;
+      const url = request.nextUrl.clone();
+      url.pathname = `/login`;
+      return NextResponse.redirect(url);
+    }
+  }
+
+  return intlMiddleware(request);
+}
 
 export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/', '/(hi|en)/:path*']
+  matcher: [
+    '/((?!api|_next|_vercel|.*\\..*).*)'
+  ]
 };

@@ -45,7 +45,7 @@ export default async function ProductsPage({params: {locale}}: {params: {locale:
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((p: Record<string, any>, i: number) => (
-            <Link href={`/${locale}/products/${p.slug}`} key={p.id} className="glass-card overflow-hidden group flex flex-col animate-slide-up" style={{animationDelay: `${(i % 10) * 50}ms`}}>
+            <Link href={`/products/${p.slug}`} key={p.id} className="glass-card overflow-hidden group flex flex-col animate-slide-up" style={{animationDelay: `${(i % 10) * 50}ms`}}>
               <div className="h-64 bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex-shrink-0">
                 <Image 
                   src={p.images[0]} 

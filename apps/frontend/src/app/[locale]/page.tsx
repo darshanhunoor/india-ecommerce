@@ -23,7 +23,7 @@ export default function HomePage({params: {locale}}: {params: {locale: string}})
               {t('Home.heroSubtitle')}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
-              <a href={`/${locale}/products`} className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium rounded-full bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+              <a href="/products" className="inline-flex items-center justify-center px-8 py-3.5 text-base font-medium rounded-full bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
                 {t('Home.shopNow')}
                 <ChevronRight className="ml-2 -mr-1" size={20} />
               </a>
@@ -40,7 +40,7 @@ export default function HomePage({params: {locale}}: {params: {locale: string}})
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="flex items-center justify-between mb-10">
           <h2 className="text-2xl font-display font-bold text-slate-900 dark:text-white">{t('Home.trending')}</h2>
-          <a href={`/${locale}/products`} className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center">
+          <a href="/products" className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center">
             View all <ChevronRight size={16} className="ml-1"/>
           </a>
         </div>
