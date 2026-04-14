@@ -15,4 +15,9 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
+// CRITICAL MVP FIX: Disable the vicious reCAPTCHA specifically for local testing/development
+if (process.env.NODE_ENV === 'development') {
+  auth.settings.appVerificationDisabledForTesting = true;
+}
+
 export { app, auth };

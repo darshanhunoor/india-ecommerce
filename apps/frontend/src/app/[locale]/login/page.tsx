@@ -48,7 +48,8 @@ export default function LoginPage() {
       const idToken = await verifyOTP(otp);
       
       // Send token to our backend
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-otp`, {
+      const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/auth/verify-otp`;
+      const res = await fetch(url, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -56,7 +57,8 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        throw new Error('Backend verification failed');
+        let errText = await res.text();
+        throw new Error(`Fetch failed! URL: ${url} | Status: ${res.status} | Body: ${errText}`);
       }
 
       const data = await res.json();
@@ -64,7 +66,7 @@ export default function LoginPage() {
       window.location.href = '/'; // Hard redirect to guarantee navigation triggers
     } catch (err: any) {
       console.error('Login Verification Error:', err);
-      setError(err.message || 'Invalid OTP or server error. Please try again.');
+      setError(err.message || 'Unknown error occurred');
     } finally {
       setLoading(false);
     }

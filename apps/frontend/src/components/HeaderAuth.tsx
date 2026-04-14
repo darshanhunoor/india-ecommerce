@@ -9,7 +9,7 @@ export default function HeaderAuth() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const handleLogout = async () => {
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, { 
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include'
       });
