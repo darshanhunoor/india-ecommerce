@@ -57,7 +57,7 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        let errText = await res.text();
+        const errText = await res.text();
         throw new Error(`Fetch failed! URL: ${url} | Status: ${res.status} | Body: ${errText}`);
       }
 

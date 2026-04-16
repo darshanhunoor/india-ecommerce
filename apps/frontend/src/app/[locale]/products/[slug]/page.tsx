@@ -2,6 +2,7 @@ import {setRequestLocale} from 'next-intl/server';
 import { ShoppingCart, Star, ShieldCheck, Truck } from 'lucide-react';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import ProductDetailActions from '@/components/ProductDetailActions';
 
 async function getProduct(slug: string) {
   try {
@@ -93,24 +94,7 @@ export default async function ProductDetailPage({params}: {params: {locale: stri
             <p>{desc}</p>
           </div>
 
-          <div className="flex gap-4 mb-8">
-            <button 
-              disabled={p.stock === 0}
-              className={`flex-1 flex items-center justify-center gap-2 py-4 px-6 rounded-2xl font-bold text-lg transition-all ${
-                p.stock === 0 
-                  ? 'bg-slate-200 dark:bg-slate-800 text-slate-500 cursor-not-allowed'
-                  : 'bg-primary-600 hover:bg-primary-700 text-white shadow-lg hover:shadow-primary-500/25 transform hover:-translate-y-0.5'
-              }`}
-            >
-              <ShoppingCart size={20} />
-              {p.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-            </button>
-            {p.stock > 0 && (
-              <button className="flex-1 py-4 px-6 rounded-2xl font-bold text-lg border-2 border-primary-600 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all">
-                Buy Now
-              </button>
-            )}
-          </div>
+          <ProductDetailActions product={p} />
 
           <div className="grid grid-cols-2 gap-4 mt-auto pt-8 border-t border-border">
             <div className="flex items-center gap-3 text-slate-600 dark:text-slate-300">

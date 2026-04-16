@@ -23,7 +23,13 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       isLoading: false,
-      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setUser: (user) => {
+        set({ user, isAuthenticated: !!user });
+        // Automatically merge the physical guest cart to the user's DB profile immediately upon login success
+        if (user) {
+          import('./cartStore').then(m => m.useCartStore.getState().mergeCarts());
+        }
+      },
       logout: () => set({ user: null, isAuthenticated: false }),
     }),
     {

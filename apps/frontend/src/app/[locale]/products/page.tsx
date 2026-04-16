@@ -2,6 +2,7 @@ import {setRequestLocale} from 'next-intl/server';
 import { ChevronDown, SlidersHorizontal, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import AddToCartButton from '@/components/AddToCartButton';
 
 async function getProducts() {
   try {
@@ -74,17 +75,7 @@ export default async function ProductsPage({params: {locale}}: {params: {locale:
                     <span className="text-sm text-slate-400 line-through">₹{(p.mrp_paise / 100).toLocaleString('en-IN')}</span>
                   )}
                 </div>
-                <button 
-                  disabled={p.stock === 0}
-                  className={`mt-auto w-full flex items-center justify-center gap-2 py-2.5 font-medium rounded-xl transition-colors ${
-                    p.stock === 0 
-                      ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed'
-                      : 'bg-primary-50 dark:bg-primary-900/40 text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900'
-                  }`}
-                >
-                  <ShoppingCart size={18} />
-                  {p.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-                </button>
+                <AddToCartButton product={p} />
               </div>
             </Link>
           ))}

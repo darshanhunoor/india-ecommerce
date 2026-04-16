@@ -7,7 +7,9 @@ export const setupRecaptcha = (buttonId: string) => {
   if ((window as any).recaptchaVerifier) {
     try {
       (window as any).recaptchaVerifier.clear();
-    } catch (e) {}
+    } catch {
+      // ignore
+    }
     (window as any).recaptchaVerifier = null;
   }
 
