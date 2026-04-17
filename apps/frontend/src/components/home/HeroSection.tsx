@@ -74,17 +74,21 @@ export default function HeroSection() {
             {/* Main image card with slow zoom */}
             <div className="relative w-72 sm:w-80 lg:w-96">
               <motion.div
-                animate={{ scale: [1, 1.03, 1] }}
-                transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-                className="rounded-3xl overflow-hidden aspect-square shadow-glow-saffron"
-                style={{ background: 'linear-gradient(135deg, #1a0a00 0%, #2d1200 100%)' }}
+                animate={{ scale: [1, 1.02, 1] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="rounded-[2.5rem] overflow-hidden aspect-square border border-white/10 bg-white/5 backdrop-blur-2xl shadow-2xl flex flex-col items-center justify-center relative"
               >
-                <div className="w-full h-full flex flex-col items-center justify-center gap-6 p-8">
-                  {/* Decorative product showcase placeholder */}
-                  <div className="w-full h-full rounded-2xl bg-gradient-to-br from-primary-900/60 via-navy-800/80 to-navy-900 flex flex-col items-center justify-center gap-4 text-center">
-                    <div className="text-8xl">👗</div>
-                    <div className="text-navy-50 font-display font-bold text-xl">Women's Collection</div>
-                    <div className="text-primary-400 text-sm font-semibold">Starting at ₹499</div>
+                {/* Decorative glow inside the card */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-500/20 rounded-full blur-[80px]" />
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/20 rounded-full blur-[80px]" />
+
+                <div className="relative z-10 flex flex-col items-center text-center gap-5">
+                  <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center text-5xl shadow-inner border border-white/5 backdrop-blur-md">
+                    👗
+                  </div>
+                  <div>
+                    <h3 className="text-white font-display font-black text-3xl tracking-tight mb-1">Women's Collection</h3>
+                    <p className="text-primary-300 text-sm font-bold tracking-widest uppercase">From ₹499</p>
                   </div>
                 </div>
               </motion.div>
@@ -92,23 +96,28 @@ export default function HeroSection() {
               {/* Floating discount badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0, rotate: -12 }}
-                animate={{ opacity: 1, scale: 1, rotate: -8 }}
-                transition={{ duration: 0.5, delay: 0.9, type: 'spring', stiffness: 200 }}
-                className="absolute -top-4 -right-4 w-20 h-20 bg-primary-500 rounded-full flex flex-col items-center justify-center shadow-glow-saffron text-navy-50"
+                animate={{ opacity: 1, scale: 1, rotate: 6 }}
+                transition={{ duration: 0.8, delay: 0.9, type: 'spring', stiffness: 150 }}
+                className="absolute -top-6 -right-6 w-24 h-24 rounded-full flex flex-col items-center justify-center bg-gradient-to-br from-primary-400 to-primary-600 shadow-[0_8px_32px_rgba(249,115,22,0.4)] border border-white/20 text-white z-20"
               >
-                <span className="font-black text-xl leading-none">50%</span>
-                <span className="text-[10px] font-bold opacity-90">OFF</span>
+                <span className="font-black text-2xl leading-none shadow-sm">50%</span>
+                <span className="text-[11px] font-bold tracking-widest opacity-90 mt-0.5">OFF</span>
               </motion.div>
 
               {/* Floating trust badge bottom-left */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 1.1 }}
-                className="absolute -bottom-4 -left-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 text-navy-50"
+                transition={{ duration: 0.6, delay: 1.1, ease: 'easeOut' }}
+                className="absolute -bottom-6 -left-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[1.25rem] p-4 shadow-2xl text-white z-20 flex items-center gap-4"
               >
-                <div className="text-xs text-navy-300 font-medium">Free Delivery</div>
-                <div className="text-sm font-bold">On orders above ₹499</div>
+                <div className="w-10 h-10 rounded-full bg-white/10 border border-white/10 shadow-inner flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary-400"><path d="M5 18H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3"/><path d="M19 18h2a2 2 0 0 0 2-2v-5l-3-4h-4"/><path d="M5 14h14"/><circle cx="8" cy="18" r="3"/><circle cx="16" cy="18" r="3"/></svg>
+                </div>
+                <div>
+                  <div className="text-[11px] text-navy-200 font-bold tracking-wider uppercase mb-0.5">Free Delivery</div>
+                  <div className="text-sm font-semibold text-white">On orders above ₹499</div>
+                </div>
               </motion.div>
             </div>
           </motion.div>
