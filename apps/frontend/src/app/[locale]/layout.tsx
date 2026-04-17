@@ -64,14 +64,14 @@ export default async function LocaleLayout({
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
                 {/* Logo */}
-                <Link href="/" className="flex items-center gap-2 group">
+                <a href="/" className="flex items-center gap-2 group">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-glow-saffron">
                     <span className="text-white font-display font-black text-sm leading-none">M</span>
                   </div>
                   <span className="font-display font-bold text-xl text-navy-900 group-hover:text-primary-600 transition-colors tracking-tight hidden sm:block">
                     MBEcommerce
                   </span>
-                </Link>
+                </a>
 
                 {/* Nav */}
                 <nav className="hidden md:flex items-center gap-1">
@@ -109,12 +109,12 @@ export default async function LocaleLayout({
 
                   {/* Brand */}
                   <div className="sm:col-span-2 lg:col-span-1">
-                    <div className="flex items-center gap-2 mb-4">
+                    <a href="/" className="flex items-center gap-2 mb-4 group cursor-pointer w-fit">
                       <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-glow-saffron">
                         <span className="text-white font-display font-black">M</span>
                       </div>
-                      <span className="font-display font-bold text-white text-xl">MBEcommerce</span>
-                    </div>
+                      <span className="font-display font-bold text-white text-xl group-hover:text-primary-500 transition-colors">MBEcommerce</span>
+                    </a>
                     <p className="text-sm leading-relaxed text-navy-400 mb-5 max-w-xs">
                       Premium Indian fashion &amp; lifestyle — authentic brands, GST-inclusive pricing, pan-India delivery.
                     </p>
