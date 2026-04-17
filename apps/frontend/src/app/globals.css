@@ -13,11 +13,11 @@
 @layer base {
   :root {
     /* Colours */
-    --bg:           #FAFAFA;
+    --bg:           #F1F5F9;
     --fg:           #0F172A; /* Deep Navy */
     --surface:      #FFFFFF;
-    --surface-alt:  #F4F7FA;
-    --border:       #E2E8F0;
+    --surface-alt:  #E2E8F0;
+    --border:       #CBD5E1;
     --muted:        #64748B;
 
     /* Brand */

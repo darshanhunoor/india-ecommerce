@@ -35,14 +35,16 @@ export const colors = {
     violet: '#7C3AED', // premium / highlights
   },
   // ── Semantic tokens ────────────────────────────────────────────────────────
-  background: '#FAFAFA',
+  primaryDark:'#EA6C0A',
+  secondary:  '#0F172A',
+  background: '#F1F5F9',
   surface:    '#FFFFFF',
-  surfaceAlt: '#F1F5F9',
+  surfaceAlt: '#E2E8F0',
   foreground: '#1E293B',
   muted:      '#64748B',
-  border:     '#E2E8F0',
+  border:     '#CBD5E1',
   smoothWhite:'#F8FAFC', // Smoother than pure white for dark sections
-  offWhite:   '#FAFAFA',
+  offWhite:   '#F1F5F9',
 } as const;
 
 export const typography = {
