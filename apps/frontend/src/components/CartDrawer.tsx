@@ -3,20 +3,11 @@
 import { useCartStore } from '@/store/cartStore';
 import { ShoppingCart, X, Plus, Minus, ArrowRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function CartDrawer() {
+  const [isOpen, setIsOpen] = useState(false);
   const cart = useCartStore();
-  const isOpen = cart.isDrawerOpen;
-  const setIsOpen = cart.setDrawerOpen;
-
-  // Load initial cart data on mount
-  useEffect(() => {
-    // Only attempt fetch if uuid is hydrated (handled by Zustand persist lazily)
-    if (cart.guestUuid) {
-      // In a real app we'd trigger a GET /cart to refresh amounts on load
-    }
-  }, [cart.guestUuid]);
 
   return (
     <>

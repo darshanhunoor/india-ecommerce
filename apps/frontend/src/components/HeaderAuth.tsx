@@ -3,7 +3,7 @@
 import { useAuthStore } from '@/store/authStore';
 import { useCartStore } from '@/store/cartStore';
 import Link from 'next/link';
-import { User as UserIcon, LogOut, ShoppingCart } from 'lucide-react';
+import { User, LogOut, ShoppingBag } from 'lucide-react';
 
 export default function HeaderAuth() {
   const { user, isAuthenticated, logout } = useAuthStore();
@@ -13,7 +13,7 @@ export default function HeaderAuth() {
     try {
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`, {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       });
       logout();
     } catch (e) {
@@ -21,16 +21,16 @@ export default function HeaderAuth() {
     }
   };
 
-  const CartIconLink = () => (
-    <Link 
+  const CartLink = () => (
+    <Link
       href="/cart"
-      className="relative p-2 text-slate-600 hover:text-primary-600 transition-colors"
-      title="View Full Cart"
+      title="View Cart"
+      className="relative p-2 rounded-xl text-navy-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200"
     >
-      <ShoppingCart size={24} />
+      <ShoppingBag size={22} />
       {cart.itemCount > 0 && (
-        <span className="absolute top-0 right-0 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full">
-          {cart.itemCount}
+        <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-black text-white bg-primary-500 rounded-full shadow-sm leading-none">
+          {cart.itemCount > 99 ? '99+' : cart.itemCount}
         </span>
       )}
     </Link>
@@ -38,28 +38,42 @@ export default function HeaderAuth() {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="flex items-center gap-4">
-        <Link href="/login" className="flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 bg-primary-50 px-4 py-2 rounded-full transition-colors">
-          <UserIcon size={16} />
+      <div className="flex items-center gap-2">
+        <CartLink />
+        <Link
+          href="/login"
+          className="flex items-center gap-1.5 text-sm font-semibold text-navy-900 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-xl transition-all duration-200 shadow-sm hover:shadow-glow-saffron"
+        >
+          <User size={15} />
           Login
         </Link>
-        <CartIconLink />
       </div>
     );
   }
 
   return (
-    <div className="flex items-center gap-4">
-      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-        Hi, {user.name || user.mobile}
-      </span>
-      <CartIconLink />
+    <div className="flex items-center gap-2">
+      <CartLink />
+      <Link
+        href="/orders"
+        className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-navy-600 hover:text-primary-600 px-3 py-2 rounded-xl hover:bg-primary-50 transition-all duration-200"
+      >
+        Orders
+      </Link>
+      <div className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-navy-700 bg-navy-100 px-3 py-2 rounded-xl">
+        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center">
+          <span className="text-white text-[10px] font-black">
+            {(user.name || user.mobile).charAt(0).toUpperCase()}
+          </span>
+        </div>
+        <span className="max-w-[80px] truncate">{user.name || user.mobile}</span>
+      </div>
       <button
         onClick={handleLogout}
-        className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-full transition-colors"
+        title="Logout"
+        className="p-2 rounded-xl text-navy-500 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
       >
-        <LogOut size={16} />
-        Logout
+        <LogOut size={18} />
       </button>
     </div>
   );

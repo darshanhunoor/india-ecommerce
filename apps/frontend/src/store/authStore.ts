@@ -12,7 +12,6 @@ interface User {
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
   setUser: (user: User | null) => void;
   logout: () => void;
 }
@@ -22,21 +21,23 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      isLoading: false,
-      setUser: (user) => {
+      setUser: async (user) => {
         set({ user, isAuthenticated: !!user });
-        // Automatically merge the physical guest cart to the user's DB profile immediately upon login success
         if (user) {
-          import('./cartStore').then(m => m.useCartStore.getState().mergeCarts());
+          // Merge guest cart into user cart, then sync count immediately
+          const { useCartStore } = await import('./cartStore');
+          await useCartStore.getState().mergeCarts();
         }
       },
-      logout: () => set({ user: null, isAuthenticated: false }),
+      logout: () => {
+        set({ user: null, isAuthenticated: false });
+        // Clear cart state and assign fresh guest UUID on logout
+        import('./cartStore').then(m => m.useCartStore.getState().logoutClear());
+      },
     }),
     {
-      name: 'auth-storage', // saves to localStorage so memory is preserved across reloads
-      // Wait, rule: "Never store JWT in localStorage — use memory + HttpOnly cookie only".
-      // Storing the User object in localStorage is fine, but NEVER store the accessToken or refreshToken.
-      // This state object DOES NOT contain tokens, only the generic User details, which is safe.
+      name: 'auth-storage',
+      // Only persist user object - NEVER tokens
     }
   )
 );
