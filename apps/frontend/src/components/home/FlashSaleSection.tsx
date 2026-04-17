@@ -70,7 +70,7 @@ export default function FlashSaleSection({ products }: { products: Product[] }) 
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500" />
             </span>
-            <h2 className="font-display font-black text-2xl sm:text-3xl text-white flex items-center gap-2">
+            <h2 className="font-display font-black text-2xl sm:text-3xl text-navy-50 flex items-center gap-2">
               <Zap size={24} className="text-primary-500" />
               Flash Sale
             </h2>
@@ -81,7 +81,7 @@ export default function FlashSaleSection({ products }: { products: Product[] }) 
             <span className="text-navy-400 text-sm font-medium">Ends in</span>
             {[['h', h], ['m', m], ['s', s]].map(([unit, val]) => (
               <div key={unit as string} className="flex flex-col items-center">
-                <div className="bg-primary-500 text-white font-black text-lg sm:text-xl w-12 h-12 rounded-xl flex items-center justify-center tabular-nums shadow-glow-saffron">
+                <div className="bg-primary-500 text-navy-50 font-black text-lg sm:text-xl w-12 h-12 rounded-xl flex items-center justify-center tabular-nums shadow-glow-saffron">
                   {Pad(val as number)}
                 </div>
                 <span className="text-navy-500 text-[9px] font-bold uppercase mt-1">{unit}</span>
@@ -125,7 +125,7 @@ export default function FlashSaleSection({ products }: { products: Product[] }) 
                   </div>
                 </Link>
                 <div className="p-3">
-                  <p className="text-white text-xs font-semibold line-clamp-2 mb-2">{name}</p>
+                  <p className="text-navy-50 text-xs font-semibold line-clamp-2 mb-2">{name}</p>
                   <div className="flex items-baseline gap-1.5 mb-2">
                     <span className="text-primary-400 font-black text-sm">₹{(p.price_paise / 100).toLocaleString('en-IN')}</span>
                     <span className="text-navy-500 text-[10px] line-through">₹{(p.mrp_paise / 100).toLocaleString('en-IN')}</span>

@@ -14,9 +14,9 @@
   :root {
     /* Colours */
     --bg:           #FAFAFA;
-    --fg:           #0F172A;
+    --fg:           #0F172A; /* Deep Navy */
     --surface:      #FFFFFF;
-    --surface-alt:  #F1F5F9;
+    --surface-alt:  #F4F7FA;
     --border:       #E2E8F0;
     --muted:        #64748B;
 
@@ -24,11 +24,18 @@
     --primary:      #F97316;   /* Saffron */
     --primary-dark: #EA6C0A;
     --navy:         #0F172A;
+    --navy-light:   #1E293B;
+
+    /* Smooth Text Colors */
+    --text-main:    #1E293B;
+    --text-heading: #0F172A;
+    --text-muted:   #64748B;
+    --text-on-dark: #F8FAFC;
 
     /* Shadows */
-    --shadow-sm:    0 1px 2px 0 rgb(15 23 42 / 0.05);
-    --shadow-md:    0 4px 16px -2px rgb(15 23 42 / 0.08);
-    --shadow-lg:    0 12px 32px -4px rgb(15 23 42 / 0.10);
+    --shadow-sm:    0 1px 3px 0 rgb(15 23 42 / 0.05);
+    --shadow-md:    0 6px 20px -4px rgb(15 23 42 / 0.08);
+    --shadow-lg:    0 15px 40px -6px rgb(15 23 42 / 0.12);
     --shadow-glow:  0 0 40px -8px rgb(249 115 22 / 0.40);
 
     /* Border radius */
@@ -65,21 +72,21 @@
   }
 
   body {
-    color: var(--fg);
+    color: var(--text-main);
     background: var(--bg);
     font-family: var(--font-instrument, 'Instrument Sans'), sans-serif;
     font-size: 16px;
     line-height: 1.6;
     @apply antialiased;
     /* Subtle noise texture on every page */
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-playfair, 'Playfair Display'), Georgia, serif;
     font-weight: 700;
-    line-height: 1.2;
-    color: var(--fg);
+    line-height: 1.25;
+    color: var(--text-heading);
   }
 
   /* Smooth focus ring */
@@ -234,21 +241,21 @@
   }
 
   .badge-saffron {
-    background: rgba(249,115,22,0.12);
-    color: #C2570A;
-    border: 1px solid rgba(249,115,22,0.25);
+    background: rgba(249,115,22,0.1);
+    color: #EA580C;
+    border: 1px solid rgba(249,115,22,0.15);
   }
 
   .badge-green {
-    background: rgba(34,197,94,0.1);
-    color: #15803D;
-    border: 1px solid rgba(34,197,94,0.2);
+    background: rgba(34,197,94,0.08);
+    color: #166534;
+    border: 1px solid rgba(34,197,94,0.15);
   }
 
   .badge-navy {
-    background: rgba(15,23,42,0.08);
-    color: #1E293B;
-    border: 1px solid rgba(15,23,42,0.12);
+    background: rgba(15,23,42,0.06);
+    color: #334155;
+    border: 1px solid rgba(15,23,42,0.1);
   }
 
   /* Skeleton shimmer */
@@ -290,9 +297,9 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
     pointer-events: none;
     border-radius: inherit;
-    z-index: 0;
+    z-index: -1;
   }
 }

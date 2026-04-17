@@ -108,14 +108,14 @@ export default function CategoriesGrid() {
               <div className="absolute inset-0 shadow-card transition-shadow duration-300 group-hover:shadow-card-hover rounded-2xl sm:rounded-3xl" />
 
               {/* Bottom overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-3 sm:p-4">
-                <div className="font-display font-black text-white text-lg sm:text-xl leading-tight">{cat.label}</div>
-                <div className="text-white/60 text-xs font-medium mt-0.5">{cat.count}</div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 sm:p-4">
+                <div className="font-display font-black text-navy-50 text-lg sm:text-xl leading-tight">{cat.label}</div>
+                <div className="text-navy-100/70 text-xs font-medium mt-0.5">{cat.count}</div>
               </div>
 
               {/* Hover arrow */}
               <div className="absolute bottom-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-2 transition-all duration-300">
-                <ArrowRight size={14} className="text-white" />
+                <ArrowRight size={14} className="text-navy-50" />
               </div>
             </Link>
           </motion.div>

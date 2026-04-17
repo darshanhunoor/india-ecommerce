@@ -7,10 +7,10 @@ import { motionVariants } from '@/styles/design-system';
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-navy-900 texture-noise min-h-[88vh] flex items-center">
+    <section className="relative z-0 overflow-hidden bg-navy-900 texture-noise min-h-[88vh] flex items-center">
       {/* Decorative blurs */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary-500/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-violet-600/15 blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full bg-primary-500/10 blur-[130px] pointer-events-none -z-10" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-violet-600/10 blur-[110px] pointer-events-none -z-10" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -27,7 +27,7 @@ export default function HeroSection() {
               New Season Arrivals
             </motion.span>
 
-            <motion.h1 variants={motionVariants.item} className="font-display font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-white leading-[1.08] text-balance mb-6">
+            <motion.h1 variants={motionVariants.item} className="font-display font-black text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-navy-50 leading-[1.08] text-balance mb-6">
               Where India{' '}
               <span className="relative inline-block">
                 <span className="gradient-text">Shops</span>
@@ -57,7 +57,7 @@ export default function HeroSection() {
             <motion.div variants={motionVariants.item} className="flex gap-8 mt-12 justify-center lg:justify-start">
               {[['10K+','Happy Customers'], ['1200+','Products'], ['5★','Avg Rating']].map(([num, label]) => (
                 <div key={label} className="text-center lg:text-left">
-                  <div className="text-2xl font-black text-white">{num}</div>
+                  <div className="text-2xl font-black text-navy-50">{num}</div>
                   <div className="text-xs text-navy-400 font-medium mt-0.5">{label}</div>
                 </div>
               ))}
@@ -83,7 +83,7 @@ export default function HeroSection() {
                   {/* Decorative product showcase placeholder */}
                   <div className="w-full h-full rounded-2xl bg-gradient-to-br from-primary-900/60 via-navy-800/80 to-navy-900 flex flex-col items-center justify-center gap-4 text-center">
                     <div className="text-8xl">👗</div>
-                    <div className="text-white font-display font-bold text-xl">Women's Collection</div>
+                    <div className="text-navy-50 font-display font-bold text-xl">Women's Collection</div>
                     <div className="text-primary-400 text-sm font-semibold">Starting at ₹499</div>
                   </div>
                 </div>
@@ -94,7 +94,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, scale: 0, rotate: -12 }}
                 animate={{ opacity: 1, scale: 1, rotate: -8 }}
                 transition={{ duration: 0.5, delay: 0.9, type: 'spring', stiffness: 200 }}
-                className="absolute -top-4 -right-4 w-20 h-20 bg-primary-500 rounded-full flex flex-col items-center justify-center shadow-glow-saffron text-white"
+                className="absolute -top-4 -right-4 w-20 h-20 bg-primary-500 rounded-full flex flex-col items-center justify-center shadow-glow-saffron text-navy-50"
               >
                 <span className="font-black text-xl leading-none">50%</span>
                 <span className="text-[10px] font-bold opacity-90">OFF</span>
@@ -105,7 +105,7 @@ export default function HeroSection() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.5, delay: 1.1 }}
-                className="absolute -bottom-4 -left-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-2.5 text-white"
+                className="absolute -bottom-4 -left-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl px-4 py-2.5 text-navy-50"
               >
                 <div className="text-xs text-navy-300 font-medium">Free Delivery</div>
                 <div className="text-sm font-bold">On orders above ₹499</div>

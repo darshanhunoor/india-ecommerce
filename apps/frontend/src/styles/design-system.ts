@@ -38,14 +38,22 @@ export const colors = {
   background: '#FAFAFA',
   surface:    '#FFFFFF',
   surfaceAlt: '#F1F5F9',
-  foreground: '#0F172A',
+  foreground: '#1E293B',
   muted:      '#64748B',
   border:     '#E2E8F0',
+  smoothWhite:'#F8FAFC', // Smoother than pure white for dark sections
+  offWhite:   '#FAFAFA',
 } as const;
 
 export const typography = {
   fontBody:    'var(--font-instrument)',   // Instrument Sans
   fontHeading: 'var(--font-playfair)',     // Playfair Display
+  colors: {
+    main:    '#1E293B',
+    heading: '#0F172A',
+    muted:   '#64748B',
+    light:   '#F8FAFC',
+  },
   sizes: {
     xs:  '0.75rem',   // 12px
     sm:  '0.875rem',  // 14px

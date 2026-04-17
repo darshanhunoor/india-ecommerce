@@ -29,11 +29,11 @@ export default function TrustBar() {
             key={i}
             className="inline-flex items-center gap-3 px-8 flex-shrink-0 border-r border-navy-700 last:border-r-0"
           >
-            <div className="w-8 h-8 rounded-lg bg-primary-500/15 flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center flex-shrink-0">
               <item.icon size={16} className="text-primary-400" />
             </div>
             <div>
-              <div className="text-white text-xs font-bold leading-none">{item.label}</div>
+              <div className="text-navy-50 text-xs font-bold leading-none">{item.label}</div>
               <div className="text-navy-400 text-[10px] mt-0.5">{item.sub}</div>
             </div>
           </div>
