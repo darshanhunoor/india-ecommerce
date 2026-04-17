@@ -10,6 +10,9 @@ export type ProductFilterQuery = {
   maxPrice?: string;
   q?: string;
   sort?: string;
+  brands?: string;
+  discount?: string;
+  rating?: string;
 };
 
 @Injectable()
@@ -45,47 +48,63 @@ export class ProductsService {
       ];
     }
 
+    if (query.brands) {
+      where.brand = { in: query.brands.split(',') };
+    }
+
     const orderBy: Prisma.ProductOrderByWithRelationInput = {};
     if (sort === 'price_asc') orderBy.price_paise = 'asc';
     else if (sort === 'price_desc') orderBy.price_paise = 'desc';
-    else orderBy.id = 'desc';
+    else if (sort === 'newest') orderBy.id = 'desc'; // Assuming ID represents insertion order
+    else orderBy.id = 'desc'; // Relevance
 
-    const [items, total] = await Promise.all([
-      this.prisma.product.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy,
-        include: { category: true, reviews: true },
-      }),
-      this.prisma.product.count({ where }),
-    ]);
-
-    const data = items.map((p) => {
-      const discountPercentage =
-        p.mrp_paise > 0
-          ? Math.round(((p.mrp_paise - p.price_paise) / p.mrp_paise) * 100)
-          : 0;
-
-      const avgRating =
-        p.reviews.length > 0
-          ? p.reviews.reduce((acc, rev) => acc + rev.rating, 0) /
-            p.reviews.length
-          : 0;
-
-      return {
-        ...p,
-        discountPercentage,
-        average_rating: avgRating,
-      };
+    // Fetch all matching base filters first to calculate dynamic fields
+    const allItems = await this.prisma.product.findMany({
+      where,
+      orderBy,
+      include: { category: true, reviews: true },
     });
 
+    let mappedData = allItems.map((p) => {
+      const discountPercentage = p.mrp_paise > 0 
+        ? Math.round(((p.mrp_paise - p.price_paise) / p.mrp_paise) * 100) 
+        : 0;
+      const avgRating = p.reviews.length > 0
+        ? p.reviews.reduce((acc, rev) => acc + rev.rating, 0) / p.reviews.length
+        : 0;
+      return { ...p, discountPercentage, average_rating: avgRating };
+    });
+
+    // Apply dynamic filters
+    if (query.discount) {
+      const minDiscount = parseInt(query.discount, 10);
+      mappedData = mappedData.filter(p => p.discountPercentage >= minDiscount);
+    }
+    if (query.rating) {
+      const minRating = parseFloat(query.rating);
+      mappedData = mappedData.filter(p => p.average_rating >= minRating);
+    }
+    
+    // Custom sort for top rated
+    if (sort === 'rating_desc') {
+      mappedData.sort((a, b) => b.average_rating - a.average_rating);
+    }
+
+    const total = mappedData.length;
+    
+    // Find unique brands available for the current base query (ignoring brand filter itself)
+    const availableBrands = Array.from(new Set(allItems.map(p => p.brand).filter(Boolean)));
+
+    // Paginate
+    const paginatedData = mappedData.slice(skip, skip + limit);
+
     return {
-      data,
+      data: paginatedData,
       meta: {
         total,
         page,
         last_page: Math.ceil(total / limit),
+        availableBrands,
       },
     };
   }

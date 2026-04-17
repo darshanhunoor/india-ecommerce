@@ -2,7 +2,7 @@ import { setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
 import Image from 'next/image';
 import AddToCartButton from '@/components/AddToCartButton';
-import ProductsGrid from '@/components/ProductsGrid';
+import ProductsBrowser from '@/components/ProductsBrowser';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -10,18 +10,17 @@ export const metadata: Metadata = {
   description: 'Shop Men, Women, Kids fashion and electronics — best Indian brands with GST pricing.',
 };
 
-async function getProducts(cat?: string) {
+async function getProducts(params: Record<string, string>) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    const url = cat
-      ? `${apiUrl}/api/products?category=${cat}`
-      : `${apiUrl}/api/products`;
+    const query = new URLSearchParams(params).toString();
+    const url = `${apiUrl}/api/products?${query}`;
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to fetch products');
     return res.json();
   } catch (error) {
     console.error(error);
-    return { data: [] };
+    return { data: [], meta: { page: 1, last_page: 1, total: 0 } };
   }
 }
 
@@ -39,11 +38,10 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: { locale: string };
-  searchParams: { cat?: string };
+  searchParams: any; // Accept all unknown params
 }) {
   setRequestLocale(locale);
-  const activecat = searchParams.cat || '';
-  const { data: products } = await getProducts(activecat);
+  const { data: products, meta } = await getProducts(searchParams);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -64,36 +62,9 @@ export default async function ProductsPage({
         <div className="absolute right-10 top-6 w-20 h-20 rounded-full bg-primary-400/15 blur-xl pointer-events-none" />
       </div>
 
-      {/* ── Category Filter Pills ────────────────────────────────────────────── */}
-      <div className="flex gap-2 overflow-x-auto pb-2 mb-8 no-scrollbar">
-        {CATEGORIES.map(({ label, value }) => {
-          const isActive = activecat === value;
-          return (
-            <Link
-              key={value}
-              href={value ? `/products?cat=${value}` : '/products'}
-              className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 border ${
-                isActive
-                  ? 'bg-primary-500 text-white border-primary-500 shadow-glow-saffron'
-                  : 'bg-surface text-navy-600 border-border hover:border-primary-300 hover:text-primary-600'
-              }`}
-            >
-              {label}
-            </Link>
-          );
-        })}
-      </div>
-
-      {/* ── Grid ──────────────────────────────────────────────────────────────── */}
-      {!products || products.length === 0 ? (
-        <div className="text-center py-24 card">
-          <div className="text-6xl mb-4">🛍️</div>
-          <p className="text-lg font-semibold text-navy-700 mb-1">No products found</p>
-          <p className="text-sm text-muted">Try a different category or check back soon.</p>
-        </div>
-      ) : (
-        <ProductsGrid products={products} locale={locale} />
-      )}
+      {/* Use the comprehensive PLP Browser component */}
+      <ProductsBrowser initialData={products} meta={meta} locale={locale}  />
+      
     </div>
   );
 }
