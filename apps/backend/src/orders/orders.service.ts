@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { CartService } from '../cart/cart.service';
 import { DeliveryService } from '../delivery/delivery.service';
+import { PaymentsService } from '../payments/payments.service';
 import { PaymentMethod } from '@prisma/client';
 
 @Injectable()
@@ -10,6 +11,7 @@ export class OrdersService {
     private prisma: PrismaService,
     private cartService: CartService,
     private deliveryService: DeliveryService,
+    private paymentsService: PaymentsService,
   ) {}
 
   async createOrder(userId: string, addressId: string, paymentMethod: PaymentMethod) {
@@ -78,9 +80,21 @@ export class OrdersService {
     // 6. Nuke User's cached Cart immediately off Redis to prevent double ordering
     await this.cartService.clearCart(userId, '');
 
+    let razorpayOrderId = null;
+    if (paymentMethod === 'RAZORPAY') {
+      const rpOrder = await this.paymentsService.createRazorpayOrder(orderData.total_paise, orderData.id);
+      razorpayOrderId = rpOrder.id;
+      
+      // Save the razorpay_order_id in DB
+      await this.prisma.order.update({
+        where: { id: orderData.id },
+        data: { razorpay_order_id: razorpayOrderId }
+      });
+    }
+
     return { 
       order_id: orderData.id, 
-      razorpay_order_id: null, 
+      razorpay_order_id: razorpayOrderId, 
       total_paise: orderData.total_paise, 
       estimated_delivery_days: deliveryCheck.estimated_days 
     };

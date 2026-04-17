@@ -5,6 +5,13 @@ import { useAuthStore } from '@/store/authStore';
 import { useCartStore } from '@/store/cartStore';
 import { MapPin, Truck, CreditCard, ChevronRight, Loader2, Check } from 'lucide-react';
 import Image from 'next/image';
+import Script from 'next/script';
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 type CheckoutStep = 'ADDRESS' | 'DELIVERY' | 'PAYMENT';
 
@@ -102,15 +109,68 @@ export default function CheckoutPage() {
     setIsProcessing(true);
     setErrorText('');
     try {
+      const pMethod = paymentMethod === 'COD' ? 'COD' : 'RAZORPAY';
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/orders`, {
         method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ addressId: selectedAddressId, paymentMethod })
+        body: JSON.stringify({ addressId: selectedAddressId, paymentMethod: pMethod })
       });
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       
-      cart.clearCart();
-      window.location.href = `/orders/${data.order_id}/success`;
+      if (pMethod === 'RAZORPAY' && data.razorpay_order_id) {
+        if (!window.Razorpay) throw new Error('Razorpay SDK not loaded');
+
+        // Check if it's the mock order
+        if (data.razorpay_order_id.startsWith('mock_order_')) {
+          cart.clearCart();
+          window.location.href = `/orders/${data.order_id}/success`;
+          return;
+        }
+
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID, // Use Razorpay Key Id
+          amount: data.total_paise,
+          currency: 'INR',
+          name: 'MBEcommerce',
+          description: 'Order Payment',
+          order_id: data.razorpay_order_id,
+          handler: async function (response: any) {
+            try {
+              const verifyRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/payments/verify`, {
+                method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                  order_id: data.order_id,
+                })
+              });
+              if (!verifyRes.ok) throw new Error('Payment verification failed');
+              
+              cart.clearCart();
+              window.location.href = `/orders/${data.order_id}/success`;
+            } catch (verr: any) {
+              setErrorText(verr.message);
+              setIsProcessing(false);
+            }
+          },
+          prefill: {
+            name: user?.name,
+            contact: user?.mobile,
+          },
+          theme: { color: '#F97316' },
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response: any) {
+          setErrorText(response.error.description);
+          setIsProcessing(false);
+        });
+        rzp.open();
+      } else {
+        // COD logic
+        cart.clearCart();
+        window.location.href = `/orders/${data.order_id}/success`;
+      }
     } catch (e: any) {
       setErrorText(e.message);
       setIsProcessing(false);
@@ -120,7 +180,9 @@ export default function CheckoutPage() {
   if(!user) return <div className="p-8 text-center"><Loader2 className="animate-spin inline"/></div>
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+      <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Three Step Progress */}
       <div className="flex items-center justify-between mb-8 pb-8 border-b border-border">
          <div className={`flex flex-col items-center gap-2 ${step === 'ADDRESS' ? 'text-primary-600' : 'text-slate-400'}`}>
@@ -285,6 +347,7 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
