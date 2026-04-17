@@ -47,19 +47,20 @@ export default async function ProductsPage({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
 
       {/* ── Hero Banner ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-3xl mb-10 texture-noise bg-gradient-to-br from-navy-900 via-navy-800 to-[#1a0a00] px-6 sm:px-10 py-10 sm:py-14">
+      <div className="relative overflow-hidden rounded-3xl mb-10 texture-noise bg-surface-alt border border-border px-6 sm:px-10 py-10 sm:py-14">
         <div className="relative z-10">
-          <span className="badge badge-saffron mb-3">New Arrivals</span>
-          <h1 className="font-display text-3xl sm:text-5xl font-black text-white mb-3 text-balance leading-tight">
-            Explore Collection
+          <span className="badge badge-saffron mb-3 shadow-sm bg-white">New Arrivals</span>
+          <h1 className="font-display text-3xl sm:text-5xl font-black mb-3 text-balance leading-tight">
+            <span style={{ color: 'hsl(0, 0%, 0%)' }}>Explore</span>{' '}
+            <span style={{ color: 'hsl(25, 95%, 53%)' }}>Collection</span>
           </h1>
-          <p className="text-navy-300 text-sm sm:text-base max-w-md">
+          <p className="text-navy-600 font-medium text-sm sm:text-base max-w-md">
             Authentic Indian brands · GST inclusive pricing · Pan-India delivery
           </p>
         </div>
         {/* Decorative saffron circle */}
-        <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-primary-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute right-10 top-6 w-20 h-20 rounded-full bg-primary-400/15 blur-xl pointer-events-none" />
+        <div className="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-primary-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute right-10 top-6 w-20 h-20 rounded-full bg-primary-400/10 blur-xl pointer-events-none" />
       </div>
 
       {/* Use the comprehensive PLP Browser component */}
