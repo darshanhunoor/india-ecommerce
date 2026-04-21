@@ -11,10 +11,17 @@ export interface CartItem {
 
 interface CartState {
   items: CartItem[];
+  isOpen: boolean;
+  couponCode: string | null;
+  discountPercentage: number;
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
   updateQty: (id: string, qty: number) => void;
   clearCart: () => void;
+  toggleCart: () => void;
+  setIsOpen: (open: boolean) => void;
+  applyCoupon: (code: string) => void;
+  removeCoupon: () => void;
   totalItems: () => number;
   totalPrice: () => number;
 }
@@ -23,6 +30,9 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      isOpen: false,
+      couponCode: null,
+      discountPercentage: 0,
       addItem: (item) => set((state) => {
         const existingItem = state.items.find((i) => i.id === item.id);
         if (existingItem) {
@@ -30,9 +40,10 @@ export const useCartStore = create<CartState>()(
             items: state.items.map((i) =>
               i.id === item.id ? { ...i, qty: i.qty + item.qty } : i
             ),
+            isOpen: true,
           };
         }
-        return { items: [...state.items, item] };
+        return { items: [...state.items, item], isOpen: true };
       }),
       removeItem: (id) => set((state) => ({
         items: state.items.filter((i) => i.id !== id)
@@ -42,9 +53,24 @@ export const useCartStore = create<CartState>()(
           i.id === id ? { ...i, qty } : i
         )
       })),
-      clearCart: () => set({ items: [] }),
+      clearCart: () => set({ items: [], couponCode: null, discountPercentage: 0 }),
+      toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+      setIsOpen: (open) => set({ isOpen: open }),
+      applyCoupon: (code) => {
+        // mock valid coupon check
+        if (code.toUpperCase() === 'MB10' || code.toUpperCase() === 'FIRST10') {
+            set({ couponCode: code.toUpperCase(), discountPercentage: 10 });
+        } else {
+            set({ couponCode: null, discountPercentage: 0 });
+            throw new Error('Invalid coupon');
+        }
+      },
+      removeCoupon: () => set({ couponCode: null, discountPercentage: 0 }),
       totalItems: () => get().items.reduce((acc, item) => acc + item.qty, 0),
-      totalPrice: () => get().items.reduce((acc, item) => acc + (item.price * item.qty), 0),
+      totalPrice: () => {
+        const t = get().items.reduce((acc, item) => acc + (item.price * item.qty), 0);
+        return t - (t * get().discountPercentage / 100);
+      },
     }),
     {
       name: 'mbecommerce-cart-storage',

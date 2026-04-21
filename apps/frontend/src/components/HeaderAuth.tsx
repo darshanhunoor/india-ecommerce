@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuthStore } from '@/store/authStore';
-import { useCartStore } from '@/store/cartStore';
+import { useCartStore } from '@/store/useCartStore';
 import Link from 'next/link';
 import { User, LogOut, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -23,29 +23,29 @@ export default function HeaderAuth() {
   };
 
   const CartLink = () => (
-    <Link
-      href="/cart"
+    <button
+      onClick={() => cart.toggleCart()}
       title="View Cart"
       className="relative p-2 rounded-xl text-navy-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200 block"
     >
       <motion.div
-        key={cart.itemCount}
+        key={cart.totalItems()}
         animate={{ scale: [1, 1.25, 1], y: [0, -4, 0] }}
         transition={{ duration: 0.4, type: 'spring' }}
       >
         <ShoppingBag size={22} className="relative z-10" />
       </motion.div>
-      {cart.itemCount > 0 && (
+      {cart.totalItems() > 0 && (
         <motion.span 
-          key={`badge-${cart.itemCount}`}
+          key={`badge-${cart.totalItems()}`}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           className="absolute -top-1 -right-1 min-w-[20px] h-[20px] px-1 flex items-center justify-center text-[10px] font-black text-white bg-primary-500 rounded-full shadow-sm leading-none z-20 border-[2px] border-surface"
         >
-          {cart.itemCount > 99 ? '99+' : cart.itemCount}
+          {cart.totalItems() > 99 ? '99+' : cart.totalItems()}
         </motion.span>
       )}
-    </Link>
+    </button>
   );
 
   if (!isAuthenticated || !user) {

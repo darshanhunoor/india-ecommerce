@@ -5,6 +5,7 @@ import { Instrument_Sans, Playfair_Display } from 'next/font/google';
 import '../globals.css';
 import HeaderAuth from '@/components/HeaderAuth';
 import CartInitializer from '@/components/CartInitializer';
+import CartDrawer from '@/components/CartDrawer';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
 import type { Metadata } from 'next';
@@ -65,6 +66,7 @@ export default async function LocaleLayout({
         }} />
         <NextIntlClientProvider messages={messages}>
           <CartInitializer />
+          <CartDrawer />
           <div className="min-h-screen flex flex-col">
 
             {/* ── Header ──────────────────────────────────────────────────── */}
