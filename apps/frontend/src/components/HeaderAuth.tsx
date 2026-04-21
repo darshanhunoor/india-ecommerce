@@ -5,10 +5,16 @@ import { useCartStore } from '@/store/useCartStore';
 import Link from 'next/link';
 import { User, LogOut, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export default function HeaderAuth() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const cart = useCartStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -29,13 +35,13 @@ export default function HeaderAuth() {
       className="relative p-2 rounded-xl text-navy-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200 block"
     >
       <motion.div
-        key={cart.totalItems()}
+        key={mounted ? cart.totalItems() : 'cart-icon'}
         animate={{ scale: [1, 1.25, 1], y: [0, -4, 0] }}
-        transition={{ duration: 0.4, type: 'spring' }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
       >
         <ShoppingBag size={22} className="relative z-10" />
       </motion.div>
-      {cart.totalItems() > 0 && (
+      {mounted && cart.totalItems() > 0 && (
         <motion.span 
           key={`badge-${cart.totalItems()}`}
           initial={{ scale: 0 }}
