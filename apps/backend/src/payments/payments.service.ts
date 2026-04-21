@@ -1,6 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const Razorpay = require('razorpay');
 
 @Injectable()

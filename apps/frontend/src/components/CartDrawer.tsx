@@ -12,7 +12,7 @@ const AnimatedNumber = ({ value }: { value: number }) => {
   const [displayValue, setDisplayValue] = useState(value);
   
   useEffect(() => {
-    let start = displayValue;
+    const start = displayValue;
     const end = value;
     if (start === end) return;
     
@@ -36,6 +36,7 @@ const AnimatedNumber = ({ value }: { value: number }) => {
     };
     
     requestAnimationFrame(animate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   return <span>₹{(displayValue / 100).toLocaleString('en-IN')}</span>;
@@ -126,7 +127,7 @@ export default function CartDrawer() {
                     <ShoppingBag size={40} />
                   </div>
                   <h3 className="font-display font-bold text-xl text-navy-900 mb-2">Cart is Empty</h3>
-                  <p className="text-navy-400 text-sm mb-6 max-w-[200px]">Looks like you haven't added anything to your cart yet.</p>
+                  <p className="text-navy-400 text-sm mb-6 max-w-[200px]">Looks like you haven&apos;t added anything to your cart yet.</p>
                   <button onClick={() => setIsOpen(false)} className="btn-primary">Start Shopping</button>
                 </div>
               ) : (

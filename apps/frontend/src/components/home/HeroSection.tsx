@@ -87,7 +87,7 @@ export default function HeroSection() {
                     👗
                   </div>
                   <div>
-                    <h3 className="text-white font-display font-black text-3xl tracking-tight mb-1">Women's Collection</h3>
+                    <h3 className="text-white font-display font-black text-3xl tracking-tight mb-1">Women&apos;s Collection</h3>
                     <p className="text-primary-300 text-sm font-bold tracking-widest uppercase">From ₹499</p>
                   </div>
                 </div>

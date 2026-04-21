@@ -162,7 +162,7 @@ export default function CheckoutPage() {
                               <label htmlFor="city">City</label>
                             </div>
                           </div>
-                          {serviceable === false && <p className="text-xs text-red-500 font-medium">Sorry, we don't deliver to this pincode yet.</p>}
+                          {serviceable === false && <p className="text-xs text-red-500 font-medium">Sorry, we don&apos;t deliver to this pincode yet.</p>}
                         </div>
                       </motion.div>
                     )}

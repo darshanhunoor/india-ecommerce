@@ -89,7 +89,7 @@ export class DeliveryService {
       let estimatedDays = 5;
       if (isServiceable) {
         const ests = couriers.map((c: any) => {
-           let edd = c.etd || ''; // Expected Time of Delivery
+           const edd = c.etd || ''; // Expected Time of Delivery
            // Shiprocket may return a date string or days. Mock to 3 for now if parsing fails.
            return 3;
         });

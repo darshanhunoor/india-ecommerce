@@ -86,7 +86,7 @@ export class CartService {
 
   async addItem(userId: string | undefined, guestUuid: string, productId: string, quantity: number) {
     const key = this.getCartKey(userId, guestUuid);
-    let cartData = await this.redis.get<any[]>(key) || [];
+    const cartData = await this.redis.get<any[]>(key) || [];
     
     // Check Database stock constraints first
     const product = await this.prisma.product.findUnique({ where: { id: productId } });
