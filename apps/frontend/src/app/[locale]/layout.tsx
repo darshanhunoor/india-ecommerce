@@ -6,7 +6,10 @@ import '../globals.css';
 import HeaderAuth from '@/components/HeaderAuth';
 import CartInitializer from '@/components/CartInitializer';
 import CartDrawer from '@/components/CartDrawer';
+import MobileBottomNav from '@/components/MobileBottomNav';
+import BackToTop from '@/components/BackToTop';
 import PageTransition from '@/components/PageTransition';
+import MobileMenu from '@/components/MobileMenu';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
@@ -70,21 +73,28 @@ export default async function LocaleLayout({
           <div className="min-h-screen flex flex-col">
 
             {/* ── Header ──────────────────────────────────────────────────── */}
-            <header className="glass sticky top-0 z-50">
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <header className="glass sticky top-0 z-50 border-b border-border">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative">
 
-                {/* Logo */}
-                <a href="/" className="flex items-center gap-2 group">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-glow-saffron">
-                    <span className="text-white font-display font-black text-sm leading-none">M</span>
-                  </div>
-                  <span className="font-display font-bold text-xl text-navy-900 group-hover:text-primary-600 transition-colors tracking-tight hidden sm:block">
-                    MBEcommerce
-                  </span>
-                </a>
+                {/* Mobile Menu Hamburger (Left) */}
+                <div className="md:hidden flex-none w-1/3 text-left">
+                  <MobileMenu />
+                </div>
 
-                {/* Nav */}
-                <nav className="hidden md:flex items-center gap-1">
+                {/* Logo (Centered on mobile, left on desktop) */}
+                <div className="md:flex-none flex-1 flex justify-center md:justify-start">
+                  <a href="/" className="flex items-center gap-2 group">
+                    <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center shadow-glow-saffron">
+                      <span className="text-white font-display font-black text-sm leading-none">M</span>
+                    </div>
+                    <span className="font-display font-bold text-xl text-navy-900 group-hover:text-primary-600 transition-colors tracking-tight hidden sm:block">
+                      MBEcommerce
+                    </span>
+                  </a>
+                </div>
+
+                {/* Desktop Nav */}
+                <nav className="hidden md:flex flex-1 items-center justify-center gap-1">
                   {[
                     { href: '/products',         label: 'All' },
                     { href: '/products?cat=men',   label: 'Men' },
@@ -101,7 +111,10 @@ export default async function LocaleLayout({
                   ))}
                 </nav>
 
-                <HeaderAuth />
+                {/* Cart / Auth (Right) */}
+                <div className="md:flex-none w-1/3 flex justify-end">
+                  <HeaderAuth />
+                </div>
               </div>
             </header>
 
@@ -197,6 +210,8 @@ export default async function LocaleLayout({
               </div>
             </footer>
 
+            <MobileBottomNav />
+            <BackToTop />
           </div>
         </NextIntlClientProvider>
       </body>

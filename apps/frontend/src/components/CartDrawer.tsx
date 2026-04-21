@@ -80,20 +80,32 @@ export default function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-navy-900/40 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-navy-900/60 backdrop-blur-md z-[100]"
           />
 
-          {/* Drawer */}
+          {/* Drawer / Bottom Sheet */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-[100dvh] w-full max-w-md bg-surface z-[101] shadow-2xl flex flex-col border-l border-border"
+            drag="y"
+            dragConstraints={{ top: 0 }}
+            dragElastic={0.1}
+            onDragEnd={(e, info) => {
+              if (info.offset.y > 100) setIsOpen(false);
+            }}
+            className="fixed bottom-0 md:top-0 md:bottom-auto right-0 h-[85vh] md:h-[100dvh] w-full md:max-w-md bg-surface z-[101] md:shadow-2xl flex flex-col md:border-l border-border rounded-t-3xl md:rounded-none overflow-hidden"
           >
+            {/* Grabber for Mobile */}
+            <div className="w-full flex justify-center pt-3 pb-1 md:hidden">
+              <div className="w-12 h-1.5 bg-navy-200 rounded-full" />
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface-alt">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface-alt md:bg-surface">
               <h2 className="font-display font-black text-xl text-navy-900 flex items-center gap-2">
                 <ShoppingBag size={20} className="text-primary-500" />
                 Your Cart <span className="text-muted text-sm font-semibold">({totalItems()})</span>
