@@ -302,4 +302,53 @@
     border-radius: inherit;
     z-index: -1;
   }
+  
+  /* Micro Interactions & Touch Targets */
+  button, .btn-primary, .btn-secondary, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:active:not(:disabled), .btn-primary:active:not(:disabled), .btn-secondary:active:not(:disabled), .card:active {
+    transform: scale(0.97);
+    transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  @media (max-width: 768px) {
+    button, input, select, .btn-primary, .btn-secondary {
+      min-height: 44px;
+    }
+  }
+
+  /* Floating Label Pattern */
+  .floating-input-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .floating-input-group input {
+    min-height: 52px;
+    padding: 1.5rem 1rem 0.5rem;
+    background: var(--surface-alt);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--fg);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .floating-input-group label {
+    position: absolute;
+    left: 1rem;
+    top: 15px;
+    font-size: 1rem;
+    color: var(--muted);
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+  .floating-input-group input:focus, .floating-input-group input:not(:placeholder-shown) {
+    border-color: var(--primary);
+  }
+  .floating-input-group input:focus + label, .floating-input-group input:not(:placeholder-shown) + label {
+    top: 6px;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+  }
 }

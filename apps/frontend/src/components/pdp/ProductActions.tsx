@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, MouseEvent } from 'react';
 import { Minus, Plus, ShoppingBag, Zap } from 'lucide-react';
 import { useCartStore } from '@/store/useCartStore';
+import toast from 'react-hot-toast';
 
 type Product = any;
 type Variant = any;
@@ -13,11 +14,38 @@ export default function ProductActions({ product }: { product: Product }) {
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
 
-  // Group variants by type, e.g., Size, Color. Assuming standard 1-dimensional for now (like sizes)
-  // Or we just show them as chips for simplicity based on the "attributes" JSON
-  const handleAddToCart = async () => {
+  const handleAddToCart = async (e?: MouseEvent<HTMLButtonElement>) => {
     if (product.stock === 0) return;
     setIsAdding(true);
+    
+    // Create flying image animation
+    if (e) {
+      const btn = e.currentTarget;
+      const rect = btn.getBoundingClientRect();
+      const flyImg = document.createElement('img');
+      flyImg.src = product.images[0];
+      flyImg.style.position = 'fixed';
+    flyImg.style.top = `${rect.top}px`;
+    flyImg.style.left = `${rect.left + rect.width / 2}px`;
+    flyImg.style.width = '40px';
+    flyImg.style.height = '40px';
+    flyImg.style.objectFit = 'cover';
+    flyImg.style.borderRadius = '50%';
+    flyImg.style.zIndex = '9999';
+    flyImg.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    document.body.appendChild(flyImg);
+    
+    // Next frame
+    setTimeout(() => {
+      flyImg.style.top = '20px';
+      flyImg.style.left = 'calc(100vw - 60px)'; // approximate cart icon location
+      flyImg.style.transform = 'scale(0.1)';
+      flyImg.style.opacity = '0';
+    }, 50);
+    
+      setTimeout(() => document.body.removeChild(flyImg), 650);
+    }
+
     // simulate network
     await new Promise(r => setTimeout(r, 600));
     addItem({
@@ -28,6 +56,7 @@ export default function ProductActions({ product }: { product: Product }) {
       qty: quantity
     });
     setIsAdding(false);
+    toast.success('Added to Cart');
   };
 
   const handleBuyNow = async () => {

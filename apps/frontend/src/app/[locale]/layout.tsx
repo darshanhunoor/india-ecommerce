@@ -8,6 +8,8 @@ import CartInitializer from '@/components/CartInitializer';
 import PageTransition from '@/components/PageTransition';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
+import NextTopLoader from 'nextjs-toploader';
 
 // ── Fonts ──────────────────────────────────────────────────────────────────
 const instrumentSans = Instrument_Sans({
@@ -55,6 +57,12 @@ export default async function LocaleLayout({
       <body
         className={`${instrumentSans.variable} ${playfairDisplay.variable}`}
       >
+        <NextTopLoader color="#F97316" showSpinner={false} height={3} shadow="0 0 10px #F97316,0 0 5px #F97316" />
+        <Toaster position="top-right" toastOptions={{
+          success: { style: { background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.05))' } },
+          error: { style: { background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.05))' } },
+          duration: 3000,
+        }} />
         <NextIntlClientProvider messages={messages}>
           <CartInitializer />
           <div className="min-h-screen flex flex-col">

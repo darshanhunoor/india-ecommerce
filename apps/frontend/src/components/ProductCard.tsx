@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, Bell } from 'lucide-react';
+import { Star, Bell, Heart } from 'lucide-react';
 import AddToCartButton from './AddToCartButton';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { motionVariants } from '@/styles/design-system';
 
 interface Product {
@@ -30,6 +31,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, locale, layout = 'grid' }: ProductCardProps) {
   const [imgLoaded, setImgLoaded] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const name = product.name[locale] || product.name['en'];
   const p = product;
   const discount = p.discountPercentage || 0;
@@ -42,14 +44,35 @@ export default function ProductCard({ product, locale, layout = 'grid' }: Produc
     alert("You will be notified when this is back in stock!");
   };
 
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsWishlisted(!isWishlisted);
+    toast.success(isWishlisted ? 'Removed from Wishlist' : 'Added to Wishlist', { icon: '❤️' });
+  };
+
   const isList = layout === 'list';
 
   return (
-    <motion.div variants={motionVariants.item} className={`group flex ${isList ? 'flex-row gap-4' : 'flex-col'} bg-surface border border-border hover:shadow-card hover:border-primary-100 transition-all rounded-2xl overflow-hidden ${isOutOfStock ? 'opacity-70 grayscale-[30%]' : ''}`}>
+    <motion.div 
+      variants={motionVariants.item} 
+      viewport={{ once: true, margin: '-50px' }}
+      whileInView={{ opacity: 1, y: 0 }}
+      className={`group flex ${isList ? 'flex-row gap-4' : 'flex-col'} bg-surface border border-border hover:shadow-card hover:border-primary-100 transition-all rounded-2xl overflow-hidden ${isOutOfStock ? 'opacity-70 grayscale-[30%]' : ''}`}
+    >
       {/* Image container */}
       <Link href={`/products/${p.slug}`} className={`relative block bg-surface-alt ${isList ? 'w-48 flex-shrink-0' : 'aspect-[4/5]'} overflow-hidden`}>
+        {/* Dynamic Wishlist Button */}
+        <button 
+          onClick={handleWishlist}
+          className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-white/80 backdrop-blur-md shadow-sm border border-white/40 flex items-center justify-center hover:bg-white transition-all overflow-hidden"
+        >
+          <motion.div animate={isWishlisted ? { scale: [1, 1.4, 1] } : { scale: 1 }} transition={{ duration: 0.3 }}>
+            <Heart size={16} className={isWishlisted ? "fill-red-500 text-red-500" : "text-navy-400"} />
+          </motion.div>
+        </button>
+
         {!imgLoaded && (
-          <div className="absolute inset-0 bg-slate-200 animate-pulse" />
+          <div className="absolute inset-0 skeleton" />
         )}
         
         {p.images[0] ? (
