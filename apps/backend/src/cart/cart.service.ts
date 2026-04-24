@@ -146,12 +146,20 @@ export class CartService {
     return await this.calculateCart([]);
   }
 
-  async mergeCarts(userId: string, guestUuid: string) {
-    const guestKey = this.getCartKey(undefined, guestUuid);
+  async mergeCarts(userId: string, guestUuid?: string, clientItems?: { productId: string; quantity: number }[]) {
     const userKey = this.getCartKey(userId, undefined);
-
-    const guestCart = await this.redis.get<any[]>(guestKey) || [];
     const userCart = await this.redis.get<any[]>(userKey) || [];
+
+    let guestCart: any[] = [];
+    if (guestUuid) {
+      const guestKey = this.getCartKey(undefined, guestUuid);
+      guestCart = await this.redis.get<any[]>(guestKey) || [];
+      await this.redis.del(guestKey);
+    }
+    
+    if (clientItems && clientItems.length > 0) {
+      guestCart = [...guestCart, ...clientItems];
+    }
 
     if (guestCart.length === 0) {
        return await this.calculateCart(userCart);
@@ -171,7 +179,6 @@ export class CartService {
     const mergedCart = Array.from(mergedMap, ([productId, quantity]) => ({ productId, quantity }));
 
     await this.redis.set(userKey, mergedCart, { ex: 60 * 60 * 24 * 30 });
-    await this.redis.del(guestKey);
 
     return await this.calculateCart(mergedCart);
   }

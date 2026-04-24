@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Shop Men, Women, Kids fashion and electronics — best Indian brands with GST pricing.',
 };
 
+export const revalidate = 60;
+
 async function getProducts(params: Record<string, string>) {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';

@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
+export const revalidate = 30;
+
 import ProductGallery from '@/components/pdp/ProductGallery';
 import ProductActions from '@/components/pdp/ProductActions';
 import PincodeChecker from '@/components/pdp/PincodeChecker';

@@ -72,7 +72,7 @@ export default function MyOrdersPage() {
                 <div className="py-6 flex gap-4 overflow-x-auto snap-x">
                   {order.order_items.map((img:any) => (
                     <div key={img.id} className="relative w-20 h-20 bg-slate-100 rounded-xl overflow-hidden flex-shrink-0 border border-border">
-                       <Image src={img.variant?.product?.images[0] || 'https://via.placeholder.com/150'} alt="Item" fill className="object-cover" />
+                       <Image src={img.variant?.product?.images?.[0] || 'https://via.placeholder.com/150'} alt="Item" fill className="object-cover" />
                     </div>
                   ))}
                 </div>

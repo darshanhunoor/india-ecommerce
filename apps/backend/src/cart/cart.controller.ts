@@ -40,10 +40,14 @@ export class CartController {
   }
 
   @Post('merge')
-  async mergeCarts(@Headers('x-guest-uuid') guestUuid: string, @Req() req: any) {
+  async mergeCarts(
+    @Headers('x-guest-uuid') guestUuid: string,
+    @Body() body: { items?: { productId: string; quantity: number }[] },
+    @Req() req: any
+  ) {
     const userId = req.cookies?.access_token ? req.user?.id : undefined; // Require logged in user implicitly if they hit merge
     if (!userId) return { error: 'Not authenticated' };
-    const cart = await this.cartService.mergeCarts(userId, guestUuid);
+    const cart = await this.cartService.mergeCarts(userId, guestUuid, body.items);
     return { cart };
   }
 }

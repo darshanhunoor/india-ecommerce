@@ -15,6 +15,9 @@ const nextConfig = {
         hostname: 'res.cloudinary.com',
       },
     ]
+  },
+  experimental: {
+    optimizePackageImports: ['framer-motion', 'lucide-react']
   }
 };
 

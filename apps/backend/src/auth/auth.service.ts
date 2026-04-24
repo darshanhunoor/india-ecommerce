@@ -11,7 +11,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verifyFirebaseOtpAndUpsertUser(idToken: string) {
+  async verifyFirebaseOtpAndUpsertUser(idToken: string, name?: string, email?: string) {
     try {
       const decodedToken = await this.firebaseService.getAuth().verifyIdToken(idToken);
       const mobile = decodedToken.phone_number;
@@ -24,12 +24,21 @@ export class AuthService {
         where: { mobile },
       });
 
+      let isNewUser = false;
       if (!user) {
         user = await this.prisma.user.create({
           data: {
             mobile,
             role: 'CUSTOMER',
+            ...(name && { name }),
+            ...(email && { email }),
           },
+        });
+        isNewUser = true;
+      } else if (!user.name && name) {
+        user = await this.prisma.user.update({
+          where: { id: user.id },
+          data: { name, ...(email && { email }) },
         });
       }
 
@@ -42,6 +51,7 @@ export class AuthService {
         user,
         accessToken,
         refreshToken,
+        isNewUser,
       };
     } catch (error) {
       console.error('Firebase token verification error', error);

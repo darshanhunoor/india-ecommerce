@@ -1,5 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
+
+export const revalidate = 60;
 import HeroSection from '@/components/home/HeroSection';
 import TrustBar from '@/components/home/TrustBar';
 import CategoriesGrid from '@/components/home/CategoriesGrid';

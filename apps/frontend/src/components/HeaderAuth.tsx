@@ -36,8 +36,9 @@ export default function HeaderAuth() {
     >
       <motion.div
         key={mounted ? cart.totalItems() : 'cart-icon'}
-        animate={{ scale: [1, 1.25, 1], y: [0, -4, 0] }}
-        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        initial={{ scale: 1, y: 0 }}
+        animate={{ scale: 1.15, y: -2 }}
+        transition={{ duration: 0.15, repeat: 1, repeatType: 'reverse', ease: 'easeInOut' }}
       >
         <ShoppingBag size={22} className="relative z-10" />
       </motion.div>

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, Header } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import type { ProductFilterQuery } from './products.service';
 
@@ -11,11 +11,13 @@ export class ProductsController {
   // specific modules (like Cart/Orders) later.
 
   @Get()
+  @Header('Cache-Control', 'public, s-maxage=60')
   async findAll(@Query() query: ProductFilterQuery) {
     return await this.productsService.findAll(query);
   }
 
   @Get(':slug')
+  @Header('Cache-Control', 'public, s-maxage=60')
   async findOne(@Param('slug') slug: string) {
     return await this.productsService.findOneBySlug(slug);
   }

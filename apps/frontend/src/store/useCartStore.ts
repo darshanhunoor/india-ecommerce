@@ -24,6 +24,7 @@ interface CartState {
   removeCoupon: () => void;
   totalItems: () => number;
   totalPrice: () => number;
+  mergeCarts: () => Promise<void>;
 }
 
 export const useCartStore = create<CartState>()(
@@ -70,6 +71,30 @@ export const useCartStore = create<CartState>()(
       totalPrice: () => {
         const t = get().items.reduce((acc, item) => acc + (item.price * item.qty), 0);
         return t - (t * get().discountPercentage / 100);
+      },
+      mergeCarts: async () => {
+        const items = get().items;
+        if (items.length === 0) return;
+        
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/cart/merge`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: items.map(i => ({ productId: i.id, quantity: i.qty })) }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            // Assuming API returns merged items in similar structure, or we clear guest items and refetch
+            if (data.cart && data.cart.items) {
+               // Update state with server cart
+               // set({ items: data.cart.items }); // Simplified for now, just keep current for UI optimism
+            }
+            // If the user wants guest_cart removed, Zustand will keep it under mbecommerce-cart-storage but it's now synced
+          }
+        } catch (e) {
+          console.error('Cart merge failed', e);
+        }
       },
     }),
     {

@@ -120,23 +120,23 @@ export const transitions = {
 // ── Framer Motion Variants (reusable across pages) ──────────────────────────
 export const motionVariants = {
   pageEnter: {
-    hidden:  { opacity: 0, y: 18 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+    hidden:  { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } },
   },
   stagger: {
     hidden:  { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.05, delayChildren: 0.05 } },
   },
   item: {
-    hidden:  { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 , transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+    hidden:  { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0 , transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] } },
   },
   fadeIn: {
     hidden:  { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.35 } },
+    visible: { opacity: 1, transition: { duration: 0.2 } },
   },
   scaleIn: {
     hidden:  { opacity: 0, scale: 0.95 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } },
   },
 } as const;

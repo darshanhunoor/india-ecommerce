@@ -6,13 +6,15 @@ interface User {
   mobile: string;
   role: string;
   name?: string;
+  email?: string;
   created_at: string;
 }
 
 interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  setUser: (user: User | null) => void;
+  isNewUser: boolean;
+  setUser: (user: User | null, isNewUser?: boolean) => void;
   logout: () => void;
 }
 
@@ -21,18 +23,21 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      setUser: async (user) => {
-        set({ user, isAuthenticated: !!user });
+      isNewUser: false,
+      setUser: async (user, isNewUser = false) => {
+        set({ user, isAuthenticated: !!user, isNewUser });
         if (user) {
-          // Merge guest cart into user cart, then sync count immediately
-          const { useCartStore } = await import('./cartStore');
-          await useCartStore.getState().mergeCarts();
+          try {
+            const { useCartStore } = await import('./useCartStore');
+            await useCartStore.getState().mergeCarts();
+          } catch (e) {
+            console.error('Failed to merge cart', e);
+          }
         }
       },
       logout: () => {
         set({ user: null, isAuthenticated: false });
-        // Clear cart state and assign fresh guest UUID on logout
-        import('./cartStore').then(m => m.useCartStore.getState().logoutClear());
+        import('./useCartStore').then(m => m.useCartStore.getState().clearCart());
       },
     }),
     {

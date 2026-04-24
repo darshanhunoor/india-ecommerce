@@ -7,13 +7,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('verify-otp')
-  async verifyOtp(@Body('idToken') idToken: string, @Res({ passthrough: true }) res: Response) {
+  async verifyOtp(
+    @Body('idToken') idToken: string,
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Res({ passthrough: true }) res: Response
+  ) {
     if (!idToken) throw new UnauthorizedException('ID token is required');
     
-    const { user, accessToken, refreshToken } = await this.authService.verifyFirebaseOtpAndUpsertUser(idToken);
+    const { user, accessToken, refreshToken, isNewUser } = await this.authService.verifyFirebaseOtpAndUpsertUser(idToken, name, email);
     this.setCookies(res, accessToken, refreshToken);
 
-    return { user };
+    return { user, isNewUser };
   }
 
   @Post('refresh')

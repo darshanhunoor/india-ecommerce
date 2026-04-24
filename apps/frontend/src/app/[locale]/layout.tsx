@@ -61,7 +61,7 @@ export default async function LocaleLayout({
       <body
         className={`${instrumentSans.variable} ${playfairDisplay.variable}`}
       >
-        <NextTopLoader color="#F97316" showSpinner={false} height={3} shadow="0 0 10px #F97316,0 0 5px #F97316" />
+        <NextTopLoader color="#E2E8F0" showSpinner={false} height={2} shadow="none" />
         <Toaster position="top-right" toastOptions={{
           success: { style: { background: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.05))' } },
           error: { style: { background: '#fef2f2', color: '#991b1b', border: '1px solid #fecaca', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.05))' } },
