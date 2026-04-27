@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Package, Clock, Truck, CheckCircle2, ChevronRight, Ban } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -15,10 +16,8 @@ export default function MyOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/orders`, { credentials: 'include' });
-      if (res.ok) {
-         setOrders(await res.json());
-      }
+      const data = await api.orders.getAll();
+      setOrders(data);
     } catch { /* ignoring */ }
     finally { setLoading(false); }
   };

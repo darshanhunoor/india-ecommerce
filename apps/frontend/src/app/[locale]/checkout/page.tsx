@@ -7,6 +7,7 @@ import { CheckCircle2, ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 import AddressStep from './components/AddressStep';
 import DeliveryStep from './components/DeliveryStep';
@@ -30,12 +31,8 @@ export default function CheckoutPage() {
 
   // Fetch addresses on mount
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/addresses`, {
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' }
-    })
-      .then(res => res.ok ? res.json() : [])
-      .then(data => {
+    api.addresses.getAll()
+      .then((data: any) => {
         if (Array.isArray(data)) {
           setAddresses(data);
           if (data.length > 0) {
@@ -68,16 +65,7 @@ export default function CheckoutPage() {
     setIsProcessing(true);
     try {
       const pm = paymentMethod === 'upi' ? 'UPI' : paymentMethod === 'card' ? 'RAZORPAY' : 'COD';
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/orders`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ addressId: selectedAddress, paymentMethod: pm })
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || 'Failed to place order');
-      }
+      await api.orders.create(selectedAddress, pm);
 
       toast.success('Order Placed Successfully!');
       setTimeout(() => {
@@ -169,7 +157,7 @@ export default function CheckoutPage() {
                   selectedUpiApp={selectedUpiApp} setSelectedUpiApp={setSelectedUpiApp}
                   isProcessing={isProcessing} onPlaceOrder={handlePlaceOrder} onBack={() => setCurrentStep(1)}
                 />
-                -              )}
+              )}
 
             </AnimatePresence>
           </div>

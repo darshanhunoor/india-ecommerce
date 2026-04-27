@@ -11,6 +11,8 @@ import { OrdersService } from './orders.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { PaymentMethod } from '@prisma/client';
 
+import { CreateOrderDto } from './dto/create-order.dto';
+
 interface RequestWithUser {
   user: {
     id: string;
@@ -26,7 +28,7 @@ export class OrdersController {
   @Post()
   async createOrder(
     @Req() req: RequestWithUser,
-    @Body() body: { addressId: string; paymentMethod: PaymentMethod },
+    @Body() body: CreateOrderDto,
   ) {
     return this.ordersService.createOrder(
       req.user.id,

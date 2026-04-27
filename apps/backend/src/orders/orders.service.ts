@@ -101,26 +101,37 @@ export class OrdersService {
   }
 
   async getOrders(userId: string) {
-    return this.prisma.order.findMany({
-      where: { user_id: userId },
-      include: {
-        order_items: {
-           include: { variant: true }
-        },
-        address: true
-      }
-    });
+    try {
+      return await this.prisma.order.findMany({
+        where: { user_id: userId },
+        include: {
+          order_items: {
+             include: { variant: { include: { product: true } } }
+          },
+          address: true
+        }
+      });
+    } catch (error) {
+      throw new BadRequestException('Failed to fetch orders');
+    }
   }
 
   async getOrder(userId: string, orderId: string) {
-    return this.prisma.order.findFirst({
-      where: { id: orderId, user_id: userId },
-      include: {
-        order_items: {
-           include: { variant: { include: { product: true } } }
-        },
-        address: true
-      }
-    });
+    try {
+      const order = await this.prisma.order.findFirst({
+        where: { id: orderId, user_id: userId },
+        include: {
+          order_items: {
+             include: { variant: { include: { product: true } } }
+          },
+          address: true
+        }
+      });
+      if (!order) throw new NotFoundException('Order not found');
+      return order;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      throw new BadRequestException('Failed to fetch order details');
+    }
   }
 }

@@ -77,20 +77,11 @@ export const useCartStore = create<CartState>()(
         if (items.length === 0) return;
         
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/cart/merge`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ items: items.map(i => ({ productId: i.id, quantity: i.qty })) }),
-          });
-          if (res.ok) {
-            const data = await res.json();
-            // Assuming API returns merged items in similar structure, or we clear guest items and refetch
-            if (data.cart && data.cart.items) {
-               // Update state with server cart
-               // set({ items: data.cart.items }); // Simplified for now, just keep current for UI optimism
-            }
-            // If the user wants guest_cart removed, Zustand will keep it under mbecommerce-cart-storage but it's now synced
+          const { api } = await import('@/lib/api');
+          const data = await api.cart.merge(items.map(i => ({ productId: i.id, quantity: i.qty })));
+          
+          if (data && data.items) {
+             // Future extension: sync local state completely with server
           }
         } catch (e) {
           console.error('Cart merge failed', e);
