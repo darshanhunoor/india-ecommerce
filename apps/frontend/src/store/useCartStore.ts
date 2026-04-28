@@ -78,7 +78,7 @@ export const useCartStore = create<CartState>()(
         
         try {
           const { api } = await import('@/lib/api');
-          const data = await api.cart.merge(items.map(i => ({ productId: i.id, quantity: i.qty })));
+          const data = (await api.cart.merge(items.map(i => ({ productId: i.id, quantity: i.qty })))) as any;
           
           if (data && data.items) {
              // Future extension: sync local state completely with server
