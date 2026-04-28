@@ -24,8 +24,8 @@ async function bootstrap() {
     transform: true
   }));
 
-  app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor() as any);
+  app.useGlobalFilters(new AllExceptionsFilter() as any);
 
   await app.listen(process.env.PORT ?? 3001);
 }

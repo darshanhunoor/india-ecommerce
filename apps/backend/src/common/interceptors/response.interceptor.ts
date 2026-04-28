@@ -9,10 +9,10 @@ export interface Response<T> {
 }
 
 @Injectable()
-export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
+export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
+  intercept(context: ExecutionContext, next: any): any {
     return next.handle().pipe(
-      map(data => ({
+      map((data: any) => ({
         success: true,
         message: data?.message || '',
         data: data?.data !== undefined ? data.data : data,
