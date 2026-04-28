@@ -21,7 +21,7 @@ export default function CheckoutPage() {
 
   // States
   const [addresses, setAddresses] = useState<any[]>([]); // Empty for new users
-  const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [showNewAddress, setShowNewAddress] = useState(true);
   const [pincode, setPincode] = useState('');
   const [serviceable, setServiceable] = useState<boolean | null>(null);
