@@ -16,7 +16,7 @@ export default function MyOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const data = await api.orders.getAll();
+      const data = (await api.orders.getAll()) as any[];
       setOrders(data);
     } catch { /* ignoring */ }
     finally { setLoading(false); }
