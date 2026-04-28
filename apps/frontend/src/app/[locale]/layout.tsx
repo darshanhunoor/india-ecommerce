@@ -14,7 +14,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import NextTopLoader from 'nextjs-toploader';
-
+import { Analytics } from '@vercel/analytics/next';
 // ── Fonts ──────────────────────────────────────────────────────────────────
 const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
@@ -212,6 +212,7 @@ export default async function LocaleLayout({
 
             <MobileBottomNav />
             <BackToTop />
+            <Analytics />
           </div>
         </NextIntlClientProvider>
       </body>
