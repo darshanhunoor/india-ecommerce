@@ -51,5 +51,5 @@ EXPOSE 3001
 WORKDIR /app/apps/backend
 
 # Run migrations and start the application
-# Run db push instead of migrate deploy because we don't use migrations yet
-CMD npx prisma db push --accept-data-loss && node dist/main.js
+# Start the application
+CMD node dist/main.js
