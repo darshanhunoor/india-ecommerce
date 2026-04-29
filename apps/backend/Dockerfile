@@ -35,6 +35,7 @@ COPY --from=builder /app/package*.json ./
 
 # Copy built artifacts and necessary files from the builder stage
 COPY --from=builder /app/apps/backend/package*.json ./apps/backend/
+COPY --from=builder /app/apps/backend/prisma.config.ts ./apps/backend/
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/apps/backend/prisma ./apps/backend/prisma
 
