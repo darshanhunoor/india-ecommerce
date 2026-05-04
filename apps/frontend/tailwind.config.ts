@@ -47,8 +47,8 @@ const config: Config = {
         accent:      '#F97316',
       },
       fontFamily: {
-        sans:    ['var(--font-instrument)', 'Inter', 'sans-serif'],
-        display: ['var(--font-playfair)', 'Georgia', 'serif'],
+        sans:    ['Arial', 'sans-serif'],
+        display: ['"Times New Roman"', 'serif'],
       },
       boxShadow: {
         'glow-saffron': '0 0 30px -5px rgba(249,115,22,0.45)',

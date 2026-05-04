@@ -86,7 +86,8 @@ export const useCartStore = create<CartState>()(
           });
           if (res.ok) {
             const data = await res.json();
-            get().syncCartDetails(data.cart ?? data);
+            const cart = data?.data?.cart || data?.cart || data?.data || data;
+            get().syncCartDetails(cart);
           }
         } catch (e) {
           console.error('fetchCart error', e);
@@ -116,7 +117,8 @@ export const useCartStore = create<CartState>()(
           });
           if (!res.ok) throw new Error(await res.text());
           const data = await res.json();
-          get().syncCartDetails(data.cart);
+          const cart = data?.data?.cart || data?.cart || data?.data || data;
+          get().syncCartDetails(cart);
         } catch (e) {
           console.error('Cart Add Error', e);
         } finally {
@@ -137,7 +139,8 @@ export const useCartStore = create<CartState>()(
             headers: { 'x-guest-uuid': get().guestUuid },
           });
           const data = await res.json();
-          get().syncCartDetails(data.cart);
+          const cart = data?.data?.cart || data?.cart || data?.data || data;
+          get().syncCartDetails(cart);
         } finally {
           const after = new Set(get().loadingItemIds);
           after.delete(itemId);
@@ -161,7 +164,8 @@ export const useCartStore = create<CartState>()(
           });
           if (!res.ok) throw new Error('Stock limit reached');
           const data = await res.json();
-          get().syncCartDetails(data.cart);
+          const cart = data?.data?.cart || data?.cart || data?.data || data;
+          get().syncCartDetails(cart);
         } finally {
           const after = new Set(get().loadingItemIds);
           after.delete(itemId);
@@ -198,8 +202,8 @@ export const useCartStore = create<CartState>()(
             body: JSON.stringify({ guestUuid }),
           });
           const data = await res.json();
-          // Sync whatever the server returned (merged cart)
-          get().syncCartDetails(data.cart ?? data);
+          const cart = data?.data?.cart || data?.cart || data?.data || data;
+          get().syncCartDetails(cart);
         } catch (e) {
           console.error('Cart merge failed:', e);
           // Even if merge fails, fetch the logged-in user cart
