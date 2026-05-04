@@ -40,7 +40,7 @@ function useCountdown(target: Date) {
   useEffect(() => {
     const id = setInterval(() => setTime(calc()), 1000);
     return () => clearInterval(id);
-  });
+  }, []);
   return time;
 }
 
@@ -81,7 +81,7 @@ export default function FlashSaleSection({ products }: { products: Product[] }) 
             <span className="text-navy-400 text-sm font-medium">Ends in</span>
             {[['h', h], ['m', m], ['s', s]].map(([unit, val]) => (
               <div key={unit as string} className="flex flex-col items-center">
-                <div className="bg-primary-500 text-navy-50 font-black text-lg sm:text-xl w-12 h-12 rounded-xl flex items-center justify-center tabular-nums shadow-glow-saffron">
+                <div suppressHydrationWarning className="bg-primary-500 text-navy-50 font-black text-lg sm:text-xl w-12 h-12 rounded-xl flex items-center justify-center tabular-nums shadow-glow-saffron">
                   {Pad(val as number)}
                 </div>
                 <span className="text-navy-500 text-[9px] font-bold uppercase mt-1">{unit}</span>

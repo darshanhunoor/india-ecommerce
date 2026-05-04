@@ -13,7 +13,7 @@ interface ProductsBrowserProps {
   locale: string;
 }
 
-export default function ProductsBrowser({ initialData, meta, locale }: ProductsBrowserProps) {
+export default function ProductsBrowser({ initialData = [], meta = { total: 0, page: 1, last_page: 1, availableBrands: [] }, locale }: ProductsBrowserProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   
