@@ -15,7 +15,7 @@ export class AuthController {
   ) {
     if (!idToken) throw new UnauthorizedException('ID token is required');
     
-    const { user, accessToken, refreshToken, isNewUser } = await this.authService.verifyFirebaseOtpAndUpsertUser(idToken, name, email);
+    const { user, accessToken, refreshToken, isNewUser } = await this.authService.verifySupabaseOtpAndUpsertUser(idToken, name, email);
     this.setCookies(res, accessToken, refreshToken);
 
     return { user, isNewUser };

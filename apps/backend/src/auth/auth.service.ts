@@ -11,34 +11,36 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verifyFirebaseOtpAndUpsertUser(idToken: string, name?: string, email?: string) {
+  async verifySupabaseOtpAndUpsertUser(idToken: string, name?: string, emailArg?: string) {
     try {
-      const decodedToken = await this.firebaseService.getAuth().verifyIdToken(idToken);
-      const mobile = decodedToken.phone_number;
+      const decodedToken = this.jwtService.verify(idToken, {
+        secret: process.env.SUPABASE_JWT_SECRET,
+      });
+      const email = decodedToken.email || emailArg;
 
-      if (!mobile) {
-        throw new UnauthorizedException('No phone number attached to this token');
+      if (!email) {
+        throw new UnauthorizedException('No email attached to this token');
       }
 
-      let user = await this.prisma.user.findUnique({
-        where: { mobile },
+      let user = await this.prisma.user.findFirst({
+        where: { email },
       });
 
       let isNewUser = false;
       if (!user) {
         user = await this.prisma.user.create({
           data: {
-            mobile,
+            mobile: `auth_${Date.now()}_${Math.floor(Math.random()*1000)}`, // Dummy mobile to satisfy Prisma constraint
+            email,
             role: 'CUSTOMER',
             ...(name && { name }),
-            ...(email && { email }),
           },
         });
         isNewUser = true;
       } else if (!user.name && name) {
         user = await this.prisma.user.update({
           where: { id: user.id },
-          data: { name, ...(email && { email }) },
+          data: { name },
         });
       }
 
@@ -54,8 +56,8 @@ export class AuthService {
         isNewUser,
       };
     } catch (error) {
-      console.error('Firebase token verification error', error);
-      throw new UnauthorizedException('Invalid or expired Firebase ID token');
+      console.error('Supabase token verification error', error);
+      throw new UnauthorizedException('Invalid or expired Supabase ID token');
     }
   }
 

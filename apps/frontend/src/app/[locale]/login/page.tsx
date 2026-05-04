@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { sendOTP, verifyOTP } from '@/lib/auth';
 import { useAuthStore } from '@/store/authStore';
-import { Loader2, Smartphone, ShieldCheck, ArrowRight, User } from 'lucide-react';
+import { Loader2, Mail, ShieldCheck, ArrowRight, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { motionVariants } from '@/styles/design-system';
 import { useRouter } from 'next/navigation';
@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const router = useRouter();
   const [tab, setTab] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
-  const [mobile, setMobile] = useState('');
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+
   const [otp, setOtp] = useState('');
   const [step, setStep] = useState<'DETAILS' | 'OTP'>('DETAILS');
   const [loading, setLoading] = useState(false);
@@ -24,10 +24,10 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     if (tab === 'SIGNUP' && !name.trim()) { setError('Please enter your full name'); return; }
-    if (mobile.length < 10) { setError('Please enter a valid 10-digit mobile number'); return; }
+    if (!email || !email.includes('@')) { setError('Please enter a valid email address'); return; }
     setLoading(true);
     try {
-      await sendOTP(mobile, 'recaptcha-container');
+      await sendOTP(email);
       setStep('OTP');
     } catch (err: any) {
       setError(err.message || 'Failed to send OTP. Please try again.');
@@ -40,12 +40,12 @@ export default function LoginPage() {
     if (otp.length < 6) { setError('Please enter the 6-digit OTP'); return; }
     setLoading(true);
     try {
-      const idToken = await verifyOTP(otp);
+      const idToken = await verifyOTP(email, otp);
       const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/auth/verify-otp`;
       const res = await fetch(url, {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken, name: tab === 'SIGNUP' ? name : undefined, email: tab === 'SIGNUP' ? email : undefined }),
+        body: JSON.stringify({ idToken, name: tab === 'SIGNUP' ? name : undefined, email }),
       });
       if (!res.ok) throw new Error((await res.text()) || `Status ${res.status}`);
       const data = await res.json();
@@ -93,7 +93,7 @@ export default function LoginPage() {
             <p className="text-navy-300 text-sm">
               {step === 'DETAILS'
                 ? (tab === 'LOGIN' ? 'Sign in to your account.' : 'Create an account in seconds.')
-                : `We sent a 6-digit code to +91 ${mobile}`}
+                : `We sent a 6-digit code to ${email}`}
             </p>
           </div>
 
@@ -107,28 +107,22 @@ export default function LoginPage() {
             {step === 'DETAILS' ? (
               <motion.form key="details" variants={motionVariants.fadeIn} initial="hidden" animate="visible" onSubmit={handleSendOtp} className="space-y-5">
                 {tab === 'SIGNUP' && (
-                  <>
-                    <div>
-                      <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Full Name</label>
-                      <input type="text" className="input" placeholder="Enter your full name" value={name} onChange={(e) => setName(e.target.value)} disabled={loading} autoFocus={tab === 'SIGNUP'} />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Email (Optional)</label>
-                      <input type="email" className="input" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
-                    </div>
-                  </>
+                  <div>
+                    <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Full Name</label>
+                    <input type="text" className="input" placeholder="Enter your full name" value={name} onChange={(e) => setName(e.target.value)} disabled={loading} autoFocus={tab === 'SIGNUP'} />
+                  </div>
                 )}
                 <div>
-                  <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Mobile Number</label>
+                  <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Email Address</label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-700 font-bold text-sm select-none">+91</span>
-                    <input type="tel" inputMode="numeric" maxLength={10} className="input pl-14 text-navy-900 font-semibold tracking-wide text-base" placeholder="10-digit mobile number" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))} disabled={loading} autoFocus={tab === 'LOGIN'} />
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400">
+                      <Mail size={18} />
+                    </span>
+                    <input type="email" className="input pl-12 text-navy-900 font-semibold tracking-wide text-base" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} autoFocus={tab === 'LOGIN'} />
                   </div>
                 </div>
 
-                <div id="recaptcha-container" />
-
-                <button type="submit" disabled={loading || mobile.length < 10 || (tab === 'SIGNUP' && !name.trim())} className="btn-primary w-full py-4 text-base rounded-2xl">
+                <button type="submit" disabled={loading || !email.includes('@') || (tab === 'SIGNUP' && !name.trim())} className="btn-primary w-full py-4 text-base rounded-2xl">
                   {loading ? <Loader2 className="animate-spin" size={18} /> : null}
                   {loading ? 'Sending OTP...' : 'Send OTP'}
                   {!loading && <ArrowRight size={16} />}
@@ -147,7 +141,7 @@ export default function LoginPage() {
                 </button>
 
                 <button type="button" onClick={() => { setStep('DETAILS'); setOtp(''); setError(''); }} className="w-full py-2.5 text-sm font-semibold text-muted hover:text-primary-600 transition-colors">
-                  ← Edit mobile number
+                  ← Edit email address
                 </button>
               </motion.form>
             )}
