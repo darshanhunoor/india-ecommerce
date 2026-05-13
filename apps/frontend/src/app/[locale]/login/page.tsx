@@ -120,7 +120,7 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Password (6+ chars)</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Password</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400">
                     <Lock size={18} />
