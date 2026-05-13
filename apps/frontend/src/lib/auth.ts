@@ -1,62 +1,24 @@
-import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase';
 
-let confirmationResult: ConfirmationResult | null = null;
-
-export const setupRecaptcha = (buttonId: string) => {
-  if ((window as any).recaptchaVerifier) {
-    try {
-      (window as any).recaptchaVerifier.clear();
-    } catch {
-      // ignore
-    }
-    (window as any).recaptchaVerifier = null;
-  }
-
-  // Suppress Firebase's benign Enterprise fallback warning for the MVP
-    const originalWarn = console.warn;
-    console.warn = (...args) => {
-      if (typeof args[0] === 'string' && args[0].includes('Failed to initialize reCAPTCHA Enterprise config')) {
-        return;
-      }
-      originalWarn.apply(console, args);
-    };
-
-    (window as any).recaptchaVerifier = new RecaptchaVerifier(auth, buttonId, {
-      size: 'invisible',
-      callback: () => {
-        // reCAPTCHA solved
-      },
-    });
-};
-
-export const sendOTP = async (phoneNumber: string, buttonId: string) => {
+export const loginWithEmail = async (email: string, password: string) => {
   try {
-    setupRecaptcha(buttonId);
-    const appVerifier = (window as any).recaptchaVerifier;
-    const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+91${phoneNumber}`;
-    confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-    return true;
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    const idToken = await result.user.getIdToken(true);
+    return idToken;
   } catch (error) {
-    console.error('Error sending OTP:', error);
-    if ((window as any).recaptchaVerifier) {
-      (window as any).recaptchaVerifier.clear();
-      (window as any).recaptchaVerifier = null;
-    }
+    console.error('Error logging in:', error);
     throw error;
   }
 };
 
-export const verifyOTP = async (otpCode: string) => {
-  if (!confirmationResult) {
-    throw new Error('Please request OTP first');
-  }
+export const registerWithEmail = async (email: string, password: string) => {
   try {
-    const result = await confirmationResult.confirm(otpCode);
+    const result = await createUserWithEmailAndPassword(auth, email, password);
     const idToken = await result.user.getIdToken(true);
     return idToken;
   } catch (error) {
-    console.error('Error verifying OTP:', error);
+    console.error('Error registering:', error);
     throw error;
   }
 };

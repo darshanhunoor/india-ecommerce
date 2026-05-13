@@ -6,16 +6,15 @@ import type { Request, Response } from 'express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('verify-otp')
-  async verifyOtp(
+  @Post('verify-token')
+  async verifyToken(
     @Body('idToken') idToken: string,
     @Body('name') name: string,
-    @Body('email') email: string,
     @Res({ passthrough: true }) res: Response
   ) {
     if (!idToken) throw new UnauthorizedException('ID token is required');
     
-    const { user, accessToken, refreshToken, isNewUser } = await this.authService.verifyFirebaseOtpAndUpsertUser(idToken, name, email);
+    const { user, accessToken, refreshToken, isNewUser } = await this.authService.verifyFirebaseTokenAndUpsertUser(idToken, name);
     this.setCookies(res, accessToken, refreshToken);
 
     return { user, isNewUser };

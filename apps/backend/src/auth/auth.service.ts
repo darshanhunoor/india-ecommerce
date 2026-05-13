@@ -11,34 +11,34 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async verifyFirebaseOtpAndUpsertUser(idToken: string, name?: string, email?: string) {
+  async verifyFirebaseTokenAndUpsertUser(idToken: string, name?: string) {
     try {
       const decodedToken = await this.firebaseService.getAuth().verifyIdToken(idToken);
-      const mobile = decodedToken.phone_number;
+      const email = decodedToken.email;
 
-      if (!mobile) {
-        throw new UnauthorizedException('No phone number attached to this token');
+      if (!email) {
+        throw new UnauthorizedException('No email attached to this token');
       }
 
       let user = await this.prisma.user.findUnique({
-        where: { mobile },
+        where: { email },
       });
 
       let isNewUser = false;
       if (!user) {
         user = await this.prisma.user.create({
           data: {
-            mobile,
+            mobile: `fb_${Date.now()}_${Math.floor(Math.random()*1000)}`, // Dummy mobile to satisfy Prisma constraint
+            email,
             role: 'CUSTOMER',
             ...(name && { name }),
-            ...(email && { email }),
           },
         });
         isNewUser = true;
       } else if (!user.name && name) {
         user = await this.prisma.user.update({
           where: { id: user.id },
-          data: { name, ...(email && { email }) },
+          data: { name },
         });
       }
 
