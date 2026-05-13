@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { loginWithEmail, registerWithEmail } from '@/lib/auth';
 import { useAuthStore } from '@/store/authStore';
-import { Loader2, Mail, Lock, ArrowRight, User } from 'lucide-react';
+import { Loader2, Smartphone, Lock, ArrowRight, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { motionVariants } from '@/styles/design-system';
 import { useRouter } from 'next/navigation';
@@ -12,7 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [tab, setTab] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   
   const [loading, setLoading] = useState(false);
@@ -24,16 +24,17 @@ export default function LoginPage() {
     setError('');
     
     if (tab === 'SIGNUP' && !name.trim()) { setError('Please enter your full name'); return; }
-    if (!email.includes('@')) { setError('Please enter a valid email address'); return; }
+    if (mobile.length !== 10) { setError('Please enter a valid 10-digit mobile number'); return; }
     if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
 
     setLoading(true);
     try {
+      const pseudoEmail = `${mobile}@mbecommerce.com`;
       let idToken;
       if (tab === 'SIGNUP') {
-        idToken = await registerWithEmail(email, password);
+        idToken = await registerWithEmail(pseudoEmail, password);
       } else {
-        idToken = await loginWithEmail(email, password);
+        idToken = await loginWithEmail(pseudoEmail, password);
       }
 
       const url = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/auth/verify-token`;
@@ -53,7 +54,13 @@ export default function LoginPage() {
         router.push('/');
       }
     } catch (err: any) {
-      setError(err.message || 'Authentication failed. Please try again.');
+      if (err.message?.includes('auth/invalid-credential') || err.message?.includes('auth/user-not-found') || err.message?.includes('auth/wrong-password')) {
+        setError('Invalid mobile number or password.');
+      } else if (err.message?.includes('auth/email-already-in-use')) {
+        setError('This mobile number is already registered. Please login.');
+      } else {
+        setError(err.message || 'Authentication failed. Please try again.');
+      }
     } finally { setLoading(false); }
   };
 
@@ -85,7 +92,7 @@ export default function LoginPage() {
               {tab === 'LOGIN' ? 'Welcome Back!' : 'Join Us!'}
             </h1>
             <p className="text-navy-300 text-sm">
-              {tab === 'LOGIN' ? 'Sign in to your account with Email.' : 'Create an account in seconds.'}
+              {tab === 'LOGIN' ? 'Sign in to your account with Mobile & Password.' : 'Create an account in seconds.'}
             </p>
           </div>
 
@@ -105,17 +112,15 @@ export default function LoginPage() {
               )}
               
               <div>
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Email Address</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Mobile Number</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400">
-                    <Mail size={18} />
-                  </span>
-                  <input type="email" className="input pl-12 text-navy-900 font-semibold tracking-wide text-base" placeholder="name@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} autoFocus={tab === 'LOGIN'} />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-700 font-bold text-sm select-none">+91</span>
+                  <input type="tel" inputMode="numeric" maxLength={10} className="input pl-14 text-navy-900 font-semibold tracking-wide text-base" placeholder="10-digit mobile number" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))} disabled={loading} autoFocus={tab === 'LOGIN'} />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Password</label>
+                <label className="block text-xs font-bold text-navy-900 uppercase tracking-wider mb-2">Password (6+ chars)</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-navy-400">
                     <Lock size={18} />
@@ -124,7 +129,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <button type="submit" disabled={loading || !email.includes('@') || password.length < 6 || (tab === 'SIGNUP' && !name.trim())} className="btn-primary w-full py-4 text-base rounded-2xl">
+              <button type="submit" disabled={loading || mobile.length !== 10 || password.length < 6 || (tab === 'SIGNUP' && !name.trim())} className="btn-primary w-full py-4 text-base rounded-2xl">
                 {loading ? <Loader2 className="animate-spin" size={18} /> : null}
                 {loading ? 'Processing...' : (tab === 'LOGIN' ? 'Login' : 'Sign Up')}
                 {!loading && <ArrowRight size={16} />}

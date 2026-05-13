@@ -14,22 +14,23 @@ export class AuthService {
   async verifyFirebaseTokenAndUpsertUser(idToken: string, name?: string) {
     try {
       const decodedToken = await this.firebaseService.getAuth().verifyIdToken(idToken);
-      const email = decodedToken.email;
+      const pseudoEmail = decodedToken.email;
 
-      if (!email) {
-        throw new UnauthorizedException('No email attached to this token');
+      if (!pseudoEmail || !pseudoEmail.endsWith('@mbecommerce.com')) {
+        throw new UnauthorizedException('Invalid or missing email format for mobile login');
       }
+      
+      const mobile = pseudoEmail.split('@')[0];
 
       let user = await this.prisma.user.findUnique({
-        where: { email },
+        where: { mobile },
       });
 
       let isNewUser = false;
       if (!user) {
         user = await this.prisma.user.create({
           data: {
-            mobile: `fb_${Date.now()}_${Math.floor(Math.random()*1000)}`, // Dummy mobile to satisfy Prisma constraint
-            email,
+            mobile,
             role: 'CUSTOMER',
             ...(name && { name }),
           },
